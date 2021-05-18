@@ -27,7 +27,6 @@ cc.Class({
         score: cc.Label,
         scoreOver: cc.Label,
 
-
         pre_hero: cc.Prefab,
         _hero: cc.Node,
 
@@ -40,6 +39,13 @@ cc.Class({
         sound_clip: {
             default: null,
             type: cc.AudioClip
+        },
+        _waveNum: {
+            default: 0,
+            type: cc.Integer,
+            notify: function(index) {
+                cc.log(index)
+            }
         }
 
 
@@ -64,7 +70,7 @@ cc.Class({
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
         //manager.enabledDebugDraw = true;
-
+        this.getData()
         this.init();
         this.setTouch()
 
@@ -74,15 +80,11 @@ cc.Class({
 
     },
 
-    start() {
-
-
-    },
+    start() {},
     setSoundVolume(number) {
         cc.audioEngine.setVolume(this.sound, number);
     },
     update(dt) {
-
         this.setBg();
         if (this.gameState == config.gameState.PLAYING) {
             this.bulletTime++;
@@ -91,10 +93,9 @@ cc.Class({
                 this.bulletTime = 0;
                 this.createBullet();
             }
-
-            this.spawnCreeps(dt);
-            this.spawnAssassins(dt);
-            this.spawnMotherShips(dt);
+            // this.spawnCreeps(dt);
+            // this.spawnAssassins(dt);
+            // this.spawnMotherShips(dt);
         }
     },
     init() {
@@ -113,19 +114,17 @@ cc.Class({
         this.spawnCreepTime = 0
         this.spawnAssasinTime = 0
         this.spawnMotherShipTime = 0
-
         this.level = 1
     },
     setTouch() {
-
-        this.node.on("touchstart", function (event) {
+        this.node.on("touchstart", function(event) {
             // this.gameState = config.gameState.PLAYING;
             // this.gameReadyLayer.active = false;
             // this.gamePlayingLayer.active = true;
             //this.gameOverLayer.active = false;
             //this.isBgMove = true;
         }, this);
-        this.node.on("touchmove", function (event) {
+        this.node.on("touchmove", function(event) {
             if (this._hero.name != "") {
                 let pos_hero = this._hero.getPosition()
                 let pos_mov = event.getDelta()
@@ -136,14 +135,12 @@ cc.Class({
                         this._hero.setPosition(cc.v2(x, y))
             }
         }, this);
-        this.node.on("touchend", function (event) {
+        this.node.on("touchend", function(event) {
             cc.log("touchend")
-
         }, this)
 
     },
     gameFinished() {
-        cc.log("test")
         this.gameState = config.gameState.OVER;
         this.removeAllBullet()
         this.removeAllEnemy()
@@ -251,7 +248,8 @@ cc.Class({
         //cc.log(str)
         switch (str) {
             case "play":
-                this.spawnHero()
+                this.spawnHero();
+                this.initWave(3);
             case "resume":
                 this.isBgMove = true;
                 this.loadLayer(this.gamePlayingLayer)
@@ -293,4 +291,63 @@ cc.Class({
                 break;
         }
     },
+    //read json
+    getData() {
+        cc.loader.loadRes('waveconfig.json', this.getWaveData.bind(this))
+    },
+    getWaveData(err, obj) {
+        if (err) {
+            cc.log(err)
+            return;
+        }
+        this.waveContent = obj.json.wave
+        this.waveCount = obj.json.wavecount
+    },
+    initWave(waveNum) {
+        cc.log(this.waveContent[waveNum])
+        let content = this.waveContent[waveNum].content;
+        let allRow = this.waveContent[waveNum].allRow;
+        let allCol = this.waveContent[waveNum].allCol;
+        cc.log(content)
+        content.map((item, index) => {
+            switch (item) {
+                case 1:
+                    {
+                        let x = (index) % allRow
+                        let y = Math.floor(index / allRow);
+                        let creep = cc.instantiate(this.pre_creep)
+                        creep.x = x * 100 - (100 * allRow / 2) + 50;
+                        creep.y = y * 100
+                        cc.log(creep.width)
+                        this.node.addChild(creep)
+                        break;
+                    }
+                case 2:
+                    {
+                        let x = (index) % allRow
+                        let y = Math.floor(index / allRow);
+                        let creep = cc.instantiate(this.pre_assassin)
+                        creep.x = x * 100 - (100 * allRow / 2) + 50;
+                        creep.y = y * 100
+                        cc.log(creep.width)
+                        this.node.addChild(creep)
+                        break;
+                    }
+                case 3:
+                    {
+                        let x = (index) % allRow
+                        let y = Math.floor(index / allRow);
+                        let creep = cc.instantiate(this.pre_motherShip)
+                        creep.x = x * 100 - (100 * allRow / 2) + 50;
+                        creep.y = y * 100
+                        cc.log(creep.width)
+                        this.node.addChild(creep)
+                        break;
+                    }
+            }
+            if (item == 1) {
+
+            }
+        })
+    }
 });

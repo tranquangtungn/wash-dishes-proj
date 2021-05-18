@@ -1,0 +1,14 @@
+2021-05-18T22:37:27.957Z - normal: Load ~/.CocosCreator/settings.json
+2021-05-18T22:37:29.133Z - normal: Initializing Asset Database
+2021-05-18T22:37:29.135Z - normal: checking language setting...
+2021-05-18T22:37:29.135Z - normal: Language: en
+2021-05-18T22:37:30.294Z - success: preview server running at http://localhost:7456
+2021-05-18T22:37:30.296Z - success: protocol editor-framework registered
+2021-05-18T22:37:30.297Z - success: protocol app registered
+2021-05-18T22:37:30.297Z - success: protocol theme registered
+2021-05-18T22:37:30.297Z - success: protocol packages registered
+2021-05-18T22:37:30.297Z - success: protocol uuid registerred
+2021-05-18T22:37:30.297Z - success: protocol db registerred
+2021-05-18T22:37:30.297Z - success: protocol thumbnail registerred
+2021-05-18T22:37:30.297Z - success: protocol unpack registerred
+2021-05-18T22:37:30.297Z - success: protocol disable-commonjs registerred

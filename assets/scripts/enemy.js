@@ -8,7 +8,7 @@ cc.Class({
         hit_frame: cc.SpriteFrame,
         hp: 5,
         speed: {
-            set: function (value) {
+            set: function(value) {
                 this._speed = value;
             },
         },
@@ -43,7 +43,7 @@ cc.Class({
         mEmitter.instance.removeEvent(config.event.UPDATE_GAMESTATE, this._updateGameState)
         this.node.destroy();
     },
-    onCollisionEnter: function (other, self) {
+    onCollisionEnter: function(other, self) {
         if (other.node.group == "bullet") {
             this.hp -= 1;
             if (this.hp == 0) {
@@ -55,20 +55,18 @@ cc.Class({
                         this.onEnemyKilled()
                     })
                     .start()
-            }
-            else if (this._sprite.spriteFrame !== this.hit_frame && this.hp > 0) {
+            } else if (this._sprite.spriteFrame !== this.hit_frame && this.hp > 0) {
                 this._sprite.spriteFrame = this.hit_frame
                 this._anim.stop()
             }
         }
     },
-    start() {
-    },
+    start() {},
     update(dt) {
-        if (this._gameState == config.gameState.PLAYING)
-            this.node.y -= this._speed;
-        if (this.node.y <= -550) {
-            this.onEnemyKilled()
-        }
+        // if (this._gameState == config.gameState.PLAYING)
+        //     this.node.y -= this._speed;
+        // if (this.node.y <= -550) {
+        //     this.onEnemyKilled()
+        // }
     },
 });

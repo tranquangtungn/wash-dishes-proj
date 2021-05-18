@@ -18,7 +18,7 @@ cc.Class({
     start() {
 
     },
-    onCollisionEnter: function (other, self) {
+    onCollisionEnter: function(other, self) {
         let a = other.node.group == "enemy"
         if (other.node.group == "enemy") {
             this.onBulletKilled()

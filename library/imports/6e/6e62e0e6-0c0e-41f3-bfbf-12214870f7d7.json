@@ -1,0 +1,125 @@
+{
+  "__type__": "cc.SpriteAtlas",
+  "_name": "sprites.plist",
+  "_objFlags": 0,
+  "_native": "",
+  "_spriteFrames": {
+    "background": {
+      "__uuid__": "4de3f93c-a09f-4bbd-aaae-74c338c9fdc3"
+    },
+    "bomb": {
+      "__uuid__": "f6303d7b-d428-4fae-baec-e961b82d26e0"
+    },
+    "bomb_supply": {
+      "__uuid__": "65a7fe4b-5b24-4f33-940c-bff714f06fe0"
+    },
+    "bullet1": {
+      "__uuid__": "958789fd-cf2f-4f44-84fd-916db52f3aac"
+    },
+    "bullet2": {
+      "__uuid__": "ef5caee2-7a65-4802-99dc-ecf0bdb35132"
+    },
+    "bullet_supply": {
+      "__uuid__": "6fb299ea-e0e2-4072-a0a6-851372d0090c"
+    },
+    "button": {
+      "__uuid__": "4f5c37b8-c3d1-40dc-a8f8-7efedd8ca48a"
+    },
+    "enemy1": {
+      "__uuid__": "2e80dbac-404a-4121-aadb-76740fc9f436"
+    },
+    "enemy1_down1": {
+      "__uuid__": "f7e6e35b-1dcd-45a2-82c4-b6acf6f8141d"
+    },
+    "enemy1_down2": {
+      "__uuid__": "d340e8ab-09a5-4e04-9fff-6be0c38736f2"
+    },
+    "enemy1_down3": {
+      "__uuid__": "c970e0be-8d89-432c-b9d5-4cc8050db934"
+    },
+    "enemy1_down4": {
+      "__uuid__": "677137c7-9900-4144-adb8-12ac3f0ef183"
+    },
+    "enemy2": {
+      "__uuid__": "7bf2c50a-dffa-4639-a233-af5671751891"
+    },
+    "enemy2_down1": {
+      "__uuid__": "6581f931-373d-4a60-acc2-4f6d6390dccd"
+    },
+    "enemy2_down2": {
+      "__uuid__": "2ab6125a-58c0-4b34-a2db-1617006608dc"
+    },
+    "enemy2_down3": {
+      "__uuid__": "78a5dd71-a300-410a-b1ea-254b24211188"
+    },
+    "enemy2_down4": {
+      "__uuid__": "59b1c714-ee67-4b74-a3b4-2dd5aa5d152f"
+    },
+    "enemy2_hit": {
+      "__uuid__": "9c9b67fe-3be4-48aa-871f-e7eaaaea8ddd"
+    },
+    "enemy3_down1": {
+      "__uuid__": "06e61824-8dc8-4b2d-938d-3bff9d7fc65c"
+    },
+    "enemy3_down2": {
+      "__uuid__": "fa1936e0-bc48-4ee0-83bd-b36867e39a12"
+    },
+    "enemy3_down3": {
+      "__uuid__": "7212beab-d98c-48bb-b25d-f9d7ccb1e0ca"
+    },
+    "enemy3_down4": {
+      "__uuid__": "f2cdd5ac-c817-4957-9e1f-5b12557d5279"
+    },
+    "enemy3_down5": {
+      "__uuid__": "22d9d897-d3aa-49ab-a203-671aaf85a6e5"
+    },
+    "enemy3_down6": {
+      "__uuid__": "669bbc9a-0ee2-4698-845d-03f7aeb39f04"
+    },
+    "enemy3_hit": {
+      "__uuid__": "ea1b965c-8db0-4ae3-9111-b29ba47ee56e"
+    },
+    "enemy3_n1": {
+      "__uuid__": "d5a01c6d-642c-4515-900c-8c6a0d0f400c"
+    },
+    "enemy3_n2": {
+      "__uuid__": "50782f68-9733-4ea4-9cb1-631c2d5d39ee"
+    },
+    "gameover": {
+      "__uuid__": "8ad9718d-6920-4a61-8bcc-c7aad5a6fc89"
+    },
+    "life": {
+      "__uuid__": "69ddea8d-2883-4c22-934e-6c0c3e7a29a6"
+    },
+    "me1": {
+      "__uuid__": "9e2f2d95-588e-4e98-9602-91a8190d7e04"
+    },
+    "me2": {
+      "__uuid__": "45d7c98b-8f2e-4138-97c8-9c1b73e7dc0a"
+    },
+    "me_destroy_1": {
+      "__uuid__": "c2a02c60-6701-4136-b69c-36095e03c8ec"
+    },
+    "me_destroy_2": {
+      "__uuid__": "0027f99d-88f8-4568-98c7-9d624791b1da"
+    },
+    "me_destroy_3": {
+      "__uuid__": "a253b7b8-e6fd-44a9-b459-009d72cd1faa"
+    },
+    "me_destroy_4": {
+      "__uuid__": "3ae412f8-5a6c-4a3a-9834-1e7da862ba2e"
+    },
+    "pause_nor": {
+      "__uuid__": "ef83d771-778c-4725-bacd-4e583e33c3b0"
+    },
+    "pause_pressed": {
+      "__uuid__": "3ac0cee5-6e14-4ad7-bfa3-8ab00a827d25"
+    },
+    "resume_nor": {
+      "__uuid__": "3a2a9bb4-cfa4-4b67-aca4-79db5e2e3ad6"
+    },
+    "resume_pressed": {
+      "__uuid__": "5350fdab-7b39-462b-8858-6816ba2684b0"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "resume_nor",
+    "texture": "ba53dc3f-9600-4774-9232-cc3187a67c61",
+    "atlas": "6e62e0e6-0c0e-41f3-bfbf-12214870f7d7",
+    "rect": [
+      852,
+      846,
+      37,
+      41
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      60,
+      45
+    ],
+    "capInsets": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}
