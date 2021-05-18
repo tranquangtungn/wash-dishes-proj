@@ -1,0 +1,84 @@
+2021-05-18T07:18:39.821Z - normal: Load ~/.CocosCreator/settings.json
+2021-05-18T07:18:39.882Z - normal: Initializing Asset Database
+2021-05-18T07:18:39.884Z - normal: checking language setting...
+2021-05-18T07:18:39.884Z - normal: Language: en
+2021-05-18T07:18:40.597Z - success: preview server running at http://localhost:7456
+2021-05-18T07:18:40.609Z - success: protocol editor-framework registered
+2021-05-18T07:18:40.609Z - success: protocol app registered
+2021-05-18T07:18:40.609Z - success: protocol theme registered
+2021-05-18T07:18:40.609Z - success: protocol packages registered
+2021-05-18T07:18:40.609Z - success: protocol uuid registerred
+2021-05-18T07:18:40.609Z - success: protocol db registerred
+2021-05-18T07:18:40.609Z - success: protocol thumbnail registerred
+2021-05-18T07:18:40.609Z - success: protocol unpack registerred
+2021-05-18T07:18:40.610Z - success: protocol disable-commonjs registerred
+2021-05-18T07:18:42.253Z - normal: connected!
+2021-05-18T07:18:42.254Z - normal: Check project /Users/gemi/Desktop/18_5/wash-dishes-proj
+2021-05-18T07:18:42.256Z - normal: Initializing project /Users/gemi/Desktop/18_5/wash-dishes-proj
+2021-05-18T07:18:42.612Z - normal: Initializing Cocos2d
+2021-05-18T07:18:43.356Z - normal: Initializing engine extends
+2021-05-18T07:18:43.374Z - success: alipay-adapter loaded
+2021-05-18T07:18:43.380Z - success: asset-db-debugger loaded
+2021-05-18T07:18:43.382Z - success: baidu-adapter loaded
+2021-05-18T07:18:43.384Z - success: color-picker loaded
+2021-05-18T07:18:43.513Z - success: fb-audience-network loaded
+2021-05-18T07:18:43.562Z - success: fb-live-stream loaded
+2021-05-18T07:18:43.565Z - success: google-play-instant loaded
+2021-05-18T07:18:43.571Z - success: huawei-runtime loaded
+2021-05-18T07:18:43.808Z - success: cpk-publish loaded
+2021-05-18T07:18:43.809Z - success: jsb-adapter loaded
+2021-05-18T07:18:43.814Z - success: oppo-runtime loaded
+2021-05-18T07:18:43.820Z - success: package-manager loaded
+2021-05-18T07:18:43.947Z - success: qqplay-adapter loaded
+2021-05-18T07:18:43.950Z - success: runtime-dev-tools loaded
+2021-05-18T07:18:43.955Z - success: sdkbox loaded
+2021-05-18T07:18:43.960Z - success: tester loaded
+2021-05-18T07:18:43.964Z - success: ui-kit-preview-extra loaded
+2021-05-18T07:18:43.968Z - success: ui-kit-preview loaded
+2021-05-18T07:18:43.978Z - success: ui-kit loaded
+2021-05-18T07:18:43.984Z - success: vivo-runtime loaded
+2021-05-18T07:18:43.985Z - success: weapp-adapter loaded
+2021-05-18T07:18:43.987Z - success: xiaomi-adapter loaded
+2021-05-18T07:18:43.990Z - success: alipay-minigame loaded
+2021-05-18T07:18:44.036Z - success: assets loaded
+2021-05-18T07:18:44.040Z - success: builder loaded
+2021-05-18T07:18:44.269Z - success: cocos-services loaded
+2021-05-18T07:18:44.275Z - success: console loaded
+2021-05-18T07:18:44.308Z - success: fb-instant-games loaded
+2021-05-18T07:18:44.312Z - success: game-window loaded
+2021-05-18T07:18:44.314Z - success: google-instant-games loaded
+2021-05-18T07:18:44.319Z - success: hierarchy loaded
+2021-05-18T07:18:44.323Z - success: inspector loaded
+2021-05-18T07:18:44.324Z - success: keystore loaded
+2021-05-18T07:18:44.330Z - success: node-library loaded
+2021-05-18T07:18:44.332Z - success: package-asset loaded
+2021-05-18T07:18:44.333Z - success: preferences loaded
+2021-05-18T07:18:44.336Z - success: project-exporter loaded
+2021-05-18T07:18:44.342Z - success: project-importer loaded
+2021-05-18T07:18:44.345Z - success: project-settings loaded
+2021-05-18T07:18:44.350Z - success: scene loaded
+2021-05-18T07:18:44.351Z - success: simulator-debugger loaded
+2021-05-18T07:18:44.353Z - success: sprite-editor loaded
+2021-05-18T07:18:44.357Z - success: store loaded
+2021-05-18T07:18:44.366Z - success: timeline loaded
+2021-05-18T07:18:44.370Z - success: xiaomi-runtime loaded
+2021-05-18T07:18:44.499Z - success: im-plugin loaded
+2021-05-18T07:18:48.179Z - info: Cocos Services load base data!
+2021-05-18T07:18:49.831Z - normal: Loading packages
+2021-05-18T07:18:49.837Z - normal: Watching packages
+2021-05-18T07:18:49.933Z - normal: Run Application
+2021-05-18T07:31:22.828Z - warn: [db-task][sync-changes] Backup unused meta file: db://assets/res.meta
+2021-05-18T07:31:25.532Z - error: TypeError: Cannot read property 'animate' of null
+    at HTMLElement.fadeoutSelectRect (/Applications/CocosCreator.app/Contents/Resources/app.asar/editor/builtin/scene/gizmo/index.js:1:4148)
+    at Object.<anonymous> (/Applications/CocosCreator.app/Contents/Resources/app.asar/editor/builtin/scene/panel/tools/select/2d.js:1:2909)
+    at HTMLDocument.b (/Applications/CocosCreator.app/Contents/Resources/app.asar/editor-framework/lib/renderer/ui/utils/dom-utils.js:1:3526)
+2021-05-18T10:09:06.946Z - error: Property 'game._waveContent' must define at least one of 'default', 'get' or 'set'.
+    at Object.cc.errorID (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/CCDebug.js:167:16)
+    at Object.exports.preprocessAttrs (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/platform/preprocess-class.js:215:36)
+    at declareProperties (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/platform/CCClass.js:631:28)
+    at Object.CCClass [as Class] (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/platform/CCClass.js:674:17)
+    at __define (/Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:10:4)
+    at /Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:270:13
+    at Object.<anonymous> (/Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:277:11)
+    at Object.<anonymous> (/Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:280:3)
+    at Module._compile (module.js:571:32)

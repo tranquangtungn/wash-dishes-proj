@@ -65,10 +65,10 @@ cc.Class({
     start() {
     },
     update(dt) {
-        if (this._gameState == config.gameState.PLAYING)
-            this.node.y -= this._speed;
-        if (this.node.y <= -550) {
-            this.onEnemyKilled()
-        }
+        // if (this._gameState == config.gameState.PLAYING)
+        //     this.node.y -= this._speed;
+        // if (this.node.y <= -550) {
+        //     this.onEnemyKilled()
+        // }
     },
 });

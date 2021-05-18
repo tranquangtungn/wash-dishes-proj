@@ -1,0 +1,49 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "hero_destroy",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.65,
+  "sample": 20,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "c2a02c60-6701-4136-b69c-36095e03c8ec"
+            }
+          },
+          {
+            "frame": 0.15,
+            "value": {
+              "__uuid__": "0027f99d-88f8-4568-98c7-9d624791b1da"
+            }
+          },
+          {
+            "frame": 0.3,
+            "value": {
+              "__uuid__": "a253b7b8-e6fd-44a9-b459-009d72cd1faa"
+            }
+          },
+          {
+            "frame": 0.45,
+            "value": {
+              "__uuid__": "3ae412f8-5a6c-4a3a-9834-1e7da862ba2e"
+            }
+          },
+          {
+            "frame": 0.6,
+            "value": {
+              "__uuid__": "3ae412f8-5a6c-4a3a-9834-1e7da862ba2e"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": []
+}

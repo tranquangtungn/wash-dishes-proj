@@ -23,9 +23,13 @@ cc.Class({
         pre_creep: cc.Prefab,
         pre_assassin: cc.Prefab,
         pre_motherShip: cc.Prefab,
-        pre_bullet: cc.Prefab
+        pre_bullet: cc.Prefab,
+        _waveContent: {
+            default: null,
+            type: Array,
+        },
+        _init: false,
     },
-
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
@@ -33,36 +37,53 @@ cc.Class({
         //cc.log(config.event.UPDATE_SCORE)
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
+        this.getData()
         //manager.enabledDebugDraw = true;
         this.init();
         this.setTouch()
-
         mEmitter.instance.registerEvent(config.event.UPDATE_SCORE, this.updateScore.bind(this))
         mEmitter.instance.registerEvent(config.event.GAME_OVER, this.gameFinished.bind(this))
-
     },
-
     start() {
 
     },
+    initMatrix() {
+        let wave = this._waveContent[1].content
+        wave.map((item, index) => {
+            if (item == 1) {
+                let x = index % 5
+                let y = Math.floor(index / 5);
+                cc.log(y)
+                let creep = cc.instantiate(this.pre_creep)
+                creep.x = x * 100 - 150;
+                creep.y = y * 100;
+                this.node.addChild(creep)
+            }
 
+        })
+    },
     update(dt) {
 
         this.setBg();
+        if (this._init) {
+            this.initMatrix()
+            this._init = false
+        }
         if (this.gameState == config.gameState.PLAYING) {
             this.bulletTime++;
-
+            // this.minhInitEnemy()
             if (this.bulletTime == 10) {
                 this.bulletTime = 0;
                 this.createBullet();
             }
 
-            this.spawnCreeps(dt);
-            this.spawnAssassins(dt);
-            this.spawnMotherShips(dt);
+            // this.spawnCreeps(dt);
+            // this.spawnAssassins(dt);
+            // this.spawnMotherShips(dt);
         }
     },
     init() {
+
         this.isBgMove = false;
         this.bg_1.y = 0;
         this.bg_2.y = this.bg_1.y + this.bg_1.height;
@@ -86,9 +107,21 @@ cc.Class({
         this.level = 1
         this.spawnHero()
     },
+    getData() {
+        this.waveCount = 0;
+        cc.loader.loadRes('waveconfig.json', function (err, object) {
+            if (err) {
+                cc.log(err)
+                return;
+            }
+            this._waveContent = object.json.wave;
+            this.waveCount = object.json.wavecount
+        }.bind(this))
+    },
     setTouch() {
         this.node.on("touchstart", function (event) {
             this.gameState = config.gameState.PLAYING;
+            this._init = true
             this.gameReady.active = false;
             this.gamePlaying.active = true;
             //this.gameOver.active = false;
@@ -107,7 +140,6 @@ cc.Class({
         }, this);
         this.node.on("touchend", function (event) {
             cc.log("touchend")
-
         }, this)
 
     },

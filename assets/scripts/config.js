@@ -12,5 +12,4 @@ let config = {
         PAUSE: "pause"
     }
 }
-
 module.exports = config
