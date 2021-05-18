@@ -1,6 +1,7 @@
 const mEmitter = require("./mEmitter");
 const config = require("config");
 
+
 cc.Class({
     extends: cc.Component,
 
@@ -8,10 +9,20 @@ cc.Class({
         bg_1: cc.Node,
         bg_2: cc.Node,
         title: cc.Label,
-        gamePlaying: cc.Node,
-        gamePause: cc.Node,
-        gameReady: cc.Node,
-        gameOver: cc.Node,
+
+
+        gameReadyLayer: cc.Node,
+        gamePlayingLayer: cc.Node,
+        gamePauseLayer: cc.Node,
+        gameOverLayer: cc.Node,
+        heroSkinsLayer: cc.Node,
+        rankedLayer: cc.Node,
+        settingsLayer: cc.Node,
+
+        _LayerList: {
+            default: [],
+            type: [cc.Node]
+        },
 
         score: cc.Label,
         scoreOver: cc.Label,
@@ -23,20 +34,41 @@ cc.Class({
         pre_creep: cc.Prefab,
         pre_assassin: cc.Prefab,
         pre_motherShip: cc.Prefab,
-        pre_bullet: cc.Prefab
+        pre_bullet: cc.Prefab,
+
+
+        sound_clip: {
+            default: null,
+            type: cc.AudioClip
+        }
+
+
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
+        this._LayerList = [
+            this.gameReadyLayer,
+            this.gamePlayingLayer,
+            this.gamePauseLayer,
+            this.gameOverLayer,
+            this.heroSkinsLayer,
+            this.rankedLayer,
+            this.settingsLayer,
+        ]
+        this.sound = cc.audioEngine.play(this.sound_clip, true, 0);
+        //cc.log(this._LayerList)
         mEmitter.instance = new mEmitter();
         //cc.log(config.event.UPDATE_SCORE)
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
         //manager.enabledDebugDraw = true;
+
         this.init();
         this.setTouch()
 
+        mEmitter.instance.registerEvent(config.event.UPDATE_VOLUME, this.setSoundVolume.bind(this))
         mEmitter.instance.registerEvent(config.event.UPDATE_SCORE, this.updateScore.bind(this))
         mEmitter.instance.registerEvent(config.event.GAME_OVER, this.gameFinished.bind(this))
 
@@ -44,8 +76,11 @@ cc.Class({
 
     start() {
 
-    },
 
+    },
+    setSoundVolume(number) {
+        cc.audioEngine.setVolume(this.sound, number);
+    },
     update(dt) {
 
         this.setBg();
@@ -66,15 +101,11 @@ cc.Class({
         this.isBgMove = false;
         this.bg_1.y = 0;
         this.bg_2.y = this.bg_1.y + this.bg_1.height;
-        this.gameReady.zIndex = 1;
-        // this.gameOver.zIndex = -1;
-        this.gamePause.zIndex = 2;
+        this.gameReadyLayer.zIndex = 1;
+        // this.gameOverLayer.zIndex = -1;
+        this.gamePauseLayer.zIndex = 2;
         //this.score.zIndex = 3;
-        this.gameReady.active = true;
-        this.gamePlaying.active = false;
-        this.gamePause.active = false;
-        this.gameOver.active = false;
-
+        this.loadLayer(this.gameReadyLayer);
         this.bulletTime = 0;
         this.gameState = config.gameState.READY
         this.score.string = 0;
@@ -84,15 +115,15 @@ cc.Class({
         this.spawnMotherShipTime = 0
 
         this.level = 1
-        this.spawnHero()
     },
     setTouch() {
+
         this.node.on("touchstart", function (event) {
-            this.gameState = config.gameState.PLAYING;
-            this.gameReady.active = false;
-            this.gamePlaying.active = true;
-            //this.gameOver.active = false;
-            this.isBgMove = true;
+            // this.gameState = config.gameState.PLAYING;
+            // this.gameReadyLayer.active = false;
+            // this.gamePlayingLayer.active = true;
+            //this.gameOverLayer.active = false;
+            //this.isBgMove = true;
         }, this);
         this.node.on("touchmove", function (event) {
             if (this._hero.name != "") {
@@ -117,7 +148,7 @@ cc.Class({
         this.removeAllBullet()
         this.removeAllEnemy()
 
-        this.gameOver.active = true;
+        this.loadLayer(this.gameOverLayer)
         this.scoreOver.string = this.score.string;
     },
     spawnCreeps(dt) {
@@ -207,34 +238,58 @@ cc.Class({
             }
         }
     },
+    loadLayer(node) {
+        let len = this._LayerList.length
+        for (let i = 0; i < len; i++) {
+            if (this._LayerList[i] === node)
+                this._LayerList[i].active = true;
+            else
+                this._LayerList[i].active = false;
+        }
+    },
     clickBtn(sender, str) {
+        //cc.log(str)
         switch (str) {
+            case "play":
+                this.spawnHero()
             case "resume":
-                cc.log("resume")
                 this.isBgMove = true;
-                this.gamePause.active = false;
-                this.gamePlaying.active = true;
+                this.loadLayer(this.gamePlayingLayer)
                 this.gameState = config.gameState.PLAYING;
                 mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState)
                 break;
             case "pause":
-                cc.log("pause")
-                //this.gameReady.active = false;
-                //this.gamePlaying.active = false;
-                this.gamePause.active = true;
-                //this.gameOver.active = false;
                 this.isBgMove = false;
+                this.loadLayer(this.gamePauseLayer)
                 this.gameState = config.gameState.PAUSE;
                 mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState)
                 break;
             case "restart":
-                cc.log("restart")
-                //this.gameOver.active = false;
+                this.isBgMove = false;
+                this.loadLayer(this.gameReadyLayer)
                 this.gameState = config.gameState.READY;
                 this.removeAllBullet()
                 this.removeAllEnemy()
                 this.removeHero()
                 this.init();
+                break;
+            case "skins":
+                this.loadLayer(this.heroSkinsLayer)
+                this.gameState = config.gameState.HEROSKINS;
+                break;
+            case "ranked":
+                this.loadLayer(this.rankedLayer)
+                this.gameState = config.gameState.RANKED;
+                break;
+            case "settings":
+                this.loadLayer(this.settingsLayer)
+                this.gameState = config.gameState.SETTINGS;
+                break;
+            case "back":
+                this.loadLayer(this.gameReadyLayer)
+                this.gameState = config.gameState.READY;
+                break;
+            default:
                 break;
         }
     },
