@@ -36,14 +36,14 @@ cc.Class({
         pre_bullet: cc.Prefab,
 
 
-        sound_clip: {
+        sound_src: {
             default: null,
             type: cc.AudioClip
         },
         _waveNum: {
             default: 0,
             type: cc.Integer,
-            notify: function(index) {
+            notify: function (index) {
                 cc.log(index)
             }
         }
@@ -54,6 +54,8 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
+        this.initLocalStorage()
+
         this._LayerList = [
             this.gameReadyLayer,
             this.gamePlayingLayer,
@@ -63,7 +65,12 @@ cc.Class({
             this.rankedLayer,
             this.settingsLayer,
         ]
-        this.sound = cc.audioEngine.play(this.sound_clip, true, 0);
+
+        this.settings = JSON.parse(cc.sys.localStorage.getItem(config.storageKey.SETTINGS));
+        this.effectVolume = this.settings.effectVolume;
+        this.soundVolume = this.settings.soundVolume;
+        this.sound = cc.audioEngine.play(this.sound_src, true, this.soundVolume);
+
         //cc.log(this._LayerList)
         mEmitter.instance = new mEmitter();
         //cc.log(config.event.UPDATE_SCORE)
@@ -74,15 +81,78 @@ cc.Class({
         this.init();
         this.setTouch()
 
-        mEmitter.instance.registerEvent(config.event.UPDATE_VOLUME, this.setSoundVolume.bind(this))
+        mEmitter.instance.registerEvent(config.event.UPDATE_SOUND, this.setSoundVolume.bind(this))
+        mEmitter.instance.registerEvent(config.event.UPDATE_EFFECT, this.setEffectVolume.bind(this))
         mEmitter.instance.registerEvent(config.event.UPDATE_SCORE, this.updateScore.bind(this))
         mEmitter.instance.registerEvent(config.event.GAME_OVER, this.gameFinished.bind(this))
 
     },
+    initLocalStorage() {
+        let settings = JSON.parse(cc.sys.localStorage.getItem(config.storageKey.SETTINGS));
+        if (!settings) {
+            cc.log("no storage")
+            settings = {
 
-    start() {},
+                soundVolume: 0.5,
+                effectVolume: 0.5,
+                currentWave: 1,
+                currentScore: 0,
+
+            }
+            cc.sys.localStorage.setItem(config.storageKey.SETTINGS, JSON.stringify(settings));
+        }
+        let leaderBoard = JSON.parse(cc.sys.localStorage.getItem(config.storageKey.LEADERBOARD));
+        if (!leaderBoard) {
+            cc.log("no storage")
+            leaderBoard = [
+                {
+                    name: "quangtung",
+                    score: 300
+                },
+                {
+                    name: "quangtung",
+                    score: 200
+                },
+                {
+                    name: "quangtung",
+                    score: 100
+                },
+                {
+                    name: "quangtung",
+                    score: 300
+                },
+                {
+                    name: "quangtung",
+                    score: 200
+                },
+                {
+                    name: "quangtung",
+                    score: 100
+                },
+                {
+                    name: "quangtung",
+                    score: 300
+                },
+                {
+                    name: "quangtung",
+                    score: 200
+                },
+                {
+                    name: "quangtung",
+                    score: 100
+                },
+            ]
+            cc.sys.localStorage.setItem(config.storageKey.LEADERBOARD, JSON.stringify(leaderBoard));
+        }
+    },
+    start() { },
+
     setSoundVolume(number) {
-        cc.audioEngine.setVolume(this.sound, number);
+        this.soundVolume = number;
+        cc.audioEngine.setVolume(this.sound, this.soundVolume);
+    },
+    setEffectVolume(number) {
+        this.effectVolume = number
     },
     update(dt) {
         this.setBg();
@@ -105,6 +175,7 @@ cc.Class({
         this.gameReadyLayer.zIndex = 1;
         // this.gameOverLayer.zIndex = -1;
         this.gamePauseLayer.zIndex = 2;
+        this.settingsLayer.zIndex = 2;
         //this.score.zIndex = 3;
         this.loadLayer(this.gameReadyLayer);
         this.bulletTime = 0;
@@ -117,14 +188,14 @@ cc.Class({
         this.level = 1
     },
     setTouch() {
-        this.node.on("touchstart", function(event) {
+        this.node.on("touchstart", function (event) {
             // this.gameState = config.gameState.PLAYING;
             // this.gameReadyLayer.active = false;
             // this.gamePlayingLayer.active = true;
             //this.gameOverLayer.active = false;
             //this.isBgMove = true;
         }, this);
-        this.node.on("touchmove", function(event) {
+        this.node.on("touchmove", function (event) {
             if (this._hero.name != "") {
                 let pos_hero = this._hero.getPosition()
                 let pos_mov = event.getDelta()
@@ -135,7 +206,7 @@ cc.Class({
                         this._hero.setPosition(cc.v2(x, y))
             }
         }, this);
-        this.node.on("touchend", function(event) {
+        this.node.on("touchend", function (event) {
             cc.log("touchend")
         }, this)
 
@@ -273,23 +344,42 @@ cc.Class({
                 break;
             case "skins":
                 this.loadLayer(this.heroSkinsLayer)
-                this.gameState = config.gameState.HEROSKINS;
+                //this.gameState = config.gameState.HEROSKINS;
                 break;
             case "ranked":
                 this.loadLayer(this.rankedLayer)
-                this.gameState = config.gameState.RANKED;
+                //this.gameState = config.gameState.RANKED;
                 break;
             case "settings":
                 this.loadLayer(this.settingsLayer)
-                this.gameState = config.gameState.SETTINGS;
+                // this.gameState = config.gameState.SETTINGS;
                 break;
             case "back":
-                this.loadLayer(this.gameReadyLayer)
-                this.gameState = config.gameState.READY;
+                if (this.gameState == config.gameState.READY)
+                    this.loadLayer(this.gameReadyLayer)
+                else if (this.gameState == config.gameState.PAUSE)
+                    this.loadLayer(this.gamePauseLayer)
+                //this.saveLeaderBoard()
+                this.saveSettings()
                 break;
             default:
                 break;
         }
+    },
+    saveLeaderBoard() {
+
+    },
+    saveSettings() {
+        cc.log("save settings")
+        let settings = {
+
+            soundVolume: this.soundVolume,
+            effectVolume: this.effectVolume,
+            currentWave: 1,
+            currentScore: 0,
+
+        }
+        cc.sys.localStorage.setItem(config.storageKey.SETTINGS, JSON.stringify(settings));
     },
     //read json
     getData() {
@@ -331,6 +421,7 @@ cc.Class({
                         creep.y = y * 100
                         cc.log(creep.width)
                         this.node.addChild(creep)
+
                         break;
                     }
                 case 3:

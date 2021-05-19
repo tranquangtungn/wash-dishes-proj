@@ -1,6 +1,7 @@
 let config = {
     event: {
-        UPDATE_VOLUME: "updateVolumn",
+        UPDATE_SOUND: "updateVolumn",
+        UPDATE_EFFECT: "updateEffect",
         UPDATE_SCORE: "changeScore",
         UPDATE_GAMESTATE: "updateGameState",
         REMOVE_BULLET: "removeBullet",
@@ -11,9 +12,13 @@ let config = {
         PLAYING: "playing",
         OVER: "over",
         PAUSE: "pause",
-        SETTINGS: "setting",
-        HEROSKINS: "skin",
-        RANKED: "ranked",
+        // SETTINGS: "setting",
+        // HEROSKINS: "skin",
+        // RANKED: "ranked",
+    },
+    storageKey: {
+        SETTINGS: "settings",
+        LEADERBOARD: "leaderBoard"
     }
 }
 
