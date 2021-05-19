@@ -5,7 +5,8 @@ let config = {
         UPDATE_SCORE: "changeScore",
         UPDATE_GAMESTATE: "updateGameState",
         REMOVE_BULLET: "removeBullet",
-        GAME_OVER: "over"
+        GAME_OVER: "over",
+        ENEMY_DESTROY: 'enemyDestroy'
     },
     gameState: {
         READY: "ready",
