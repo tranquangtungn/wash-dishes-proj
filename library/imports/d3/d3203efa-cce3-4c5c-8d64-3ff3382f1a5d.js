@@ -7,6 +7,9 @@ cc._RF.push(module, 'd320376zONMXI1kP/M4Lxpd', 'enemy');
 var mEmitter = require("mEmitter");
 var config = require("config");
 
+var _require = require("./config"),
+    gameState = _require.gameState;
+
 cc.Class({
     extends: cc.Component,
 
@@ -18,13 +21,18 @@ cc.Class({
                 this._speed = value;
             }
         },
-
         score: 1,
+        targetpos: {
+            set: function set(value) {
+                cc.log(value);
+                this._targetpos = value;
+            }
+        },
         _sprite: null,
         _anim: null,
         _gameState: null,
-        _updateGameState: null
-        //uwgduwgd
+        _updateGameState: null,
+        _status: 'move'
 
     },
 
@@ -38,11 +46,16 @@ cc.Class({
         this._updateGameState = this.updateGameState.bind(this);
         mEmitter.instance.registerEvent(config.event.UPDATE_GAMESTATE, this._updateGameState);
     },
+
+    // setMoveTo(x, y) {
+    //     cc.log(y)
+    // },
     updateGameState: function updateGameState(data) {
         this._gameState = data;
         if (data != config.gameState.PLAYING) this._anim.stop();else this._anim.start();
     },
     onEnemyKilled: function onEnemyKilled() {
+        mEmitter.instance.emit(config.event.ENEMY_DESTROY);
         mEmitter.instance.removeEvent(config.event.UPDATE_GAMESTATE, this._updateGameState);
         this.node.destroy();
     },
@@ -64,13 +77,29 @@ cc.Class({
             }
         }
     },
-    start: function start() {},
+
+    start: function start() {
+        this.onAction();
+    },
+    onPause: function onPause() {
+        this._status = 'pause';
+        this.node.stopAction(this._fly);
+    },
+    onAction: function onAction() {
+        var _this2 = this;
+
+        var moveTo = cc.moveTo(3, this._targetpos);
+        this._fly = cc.sequence(moveTo, cc.callFunc(function () {
+            _this2._state = 'idle';
+        }));
+        this.node.runAction(this._fly);
+    },
     update: function update(dt) {
-        // if (this._gameState == config.gameState.PLAYING)
-        //     this.node.y -= this._speed;
-        // if (this.node.y <= -550) {
-        //     this.onEnemyKilled()
-        // }
+        if (this._gameState == config.gameState.PAUSE && this._status == 'move') {
+            this.onPause();
+        } else if (this._gameState == config.gameState.PLAYING && this._status == 'pause') {
+            this.node.runAction(this._fly);
+        }
     }
 });
 

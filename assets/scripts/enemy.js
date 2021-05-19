@@ -1,5 +1,6 @@
 const mEmitter = require("mEmitter");
 const config = require("config");
+const { gameState } = require("./config");
 
 cc.Class({
     extends: cc.Component,
@@ -12,13 +13,18 @@ cc.Class({
                 this._speed = value;
             },
         },
-
         score: 1,
+        targetpos: {
+            set: function (value) {
+                cc.log(value)
+                this._targetpos = value
+            }
+        },
         _sprite: null,
         _anim: null,
         _gameState: null,
         _updateGameState: null,
-        //uwgduwgd
+        _status: 'move'
 
     },
 
@@ -32,6 +38,9 @@ cc.Class({
         this._updateGameState = this.updateGameState.bind(this)
         mEmitter.instance.registerEvent(config.event.UPDATE_GAMESTATE, this._updateGameState)
     },
+    // setMoveTo(x, y) {
+    //     cc.log(y)
+    // },
     updateGameState(data) {
         this._gameState = data
         if (data != config.gameState.PLAYING)
@@ -40,6 +49,7 @@ cc.Class({
             this._anim.start()
     },
     onEnemyKilled() {
+        mEmitter.instance.emit(config.event.ENEMY_DESTROY)
         mEmitter.instance.removeEvent(config.event.UPDATE_GAMESTATE, this._updateGameState)
         this.node.destroy();
     },
@@ -55,20 +65,32 @@ cc.Class({
                         this.onEnemyKilled()
                     })
                     .start()
-            }
-            else if (this._sprite.spriteFrame !== this.hit_frame && this.hp > 0) {
+            } else if (this._sprite.spriteFrame !== this.hit_frame && this.hp > 0) {
                 this._sprite.spriteFrame = this.hit_frame
                 this._anim.stop()
             }
         }
     },
+
     start() {
+        this.onAction()
+    },
+    onPause() {
+        this._status = 'pause';
+        this.node.stopAction(this._fly)
+    },
+    onAction() {
+        var moveTo = cc.moveTo(3, this._targetpos)
+        this._fly = cc.sequence(moveTo, cc.callFunc(() => {
+            this._state = 'idle'
+        }))
+        this.node.runAction(this._fly)
     },
     update(dt) {
-        // if (this._gameState == config.gameState.PLAYING)
-        //     this.node.y -= this._speed;
-        // if (this.node.y <= -550) {
-        //     this.onEnemyKilled()
-        // }
+        if (this._gameState == config.gameState.PAUSE && this._status == 'move') {
+            this.onPause()
+        } else if (this._gameState == config.gameState.PLAYING && this._status == 'pause') {
+            this.node.runAction(this._fly)
+        }   
     },
 });

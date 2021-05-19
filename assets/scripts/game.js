@@ -1,6 +1,7 @@
 const mEmitter = require("./mEmitter");
 const config = require("config");
 
+
 cc.Class({
     extends: cc.Component,
 
@@ -8,14 +9,24 @@ cc.Class({
         bg_1: cc.Node,
         bg_2: cc.Node,
         title: cc.Label,
-        gamePlaying: cc.Node,
-        gamePause: cc.Node,
-        gameReady: cc.Node,
-        gameOver: cc.Node,
+
+
+        gameReadyLayer: cc.Node,
+        gamePlayingLayer: cc.Node,
+        gamePauseLayer: cc.Node,
+        gameOverLayer: cc.Node,
+        heroSkinsLayer: cc.Node,
+        rankedLayer: cc.Node,
+        settingsLayer: cc.Node,
+        waveTitle: cc.Node,
+
+        _LayerList: {
+            default: [],
+            type: [cc.Node]
+        },
 
         score: cc.Label,
         scoreOver: cc.Label,
-
 
         pre_hero: cc.Prefab,
         _hero: cc.Node,
@@ -24,78 +35,79 @@ cc.Class({
         pre_assassin: cc.Prefab,
         pre_motherShip: cc.Prefab,
         pre_bullet: cc.Prefab,
-        _waveContent: {
+
+
+        sound_clip: {
             default: null,
-            type: Array,
+            type: cc.AudioClip
         },
-        _init: false,
+        _waveNum: {
+            default: 1,
+            type: cc.Integer,
+            notify: function () {
+                this.initWave(this._waveNum)
+            }
+        },
+        _timer: 0,
     },
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
+        this._LayerList = [
+            this.gameReadyLayer,
+            this.gamePlayingLayer,
+            this.gamePauseLayer,
+            this.gameOverLayer,
+            this.heroSkinsLayer,
+            this.rankedLayer,
+            this.settingsLayer,
+        ]
+        var temp =cc.sys.localStorage.getItem('wave')
+        cc.log('Content')
+        cc.log(temp)
+        this.sound = cc.audioEngine.play(this.sound_clip, true, 0);
+        //cc.log(this._LayerList)
         mEmitter.instance = new mEmitter();
         //cc.log(config.event.UPDATE_SCORE)
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
-        this.getData()
         //manager.enabledDebugDraw = true;
+        this.getData()
         this.init();
         this.setTouch()
+        mEmitter.instance.registerEvent(config.event.UPDATE_VOLUME, this.setSoundVolume.bind(this))
         mEmitter.instance.registerEvent(config.event.UPDATE_SCORE, this.updateScore.bind(this))
         mEmitter.instance.registerEvent(config.event.GAME_OVER, this.gameFinished.bind(this))
     },
-    start() {
 
-    },
-    initMatrix() {
-        let wave = this._waveContent[1].content
-        wave.map((item, index) => {
-            if (item == 1) {
-                let x = index % 5
-                let y = Math.floor(index / 5);
-                cc.log(y)
-                let creep = cc.instantiate(this.pre_creep)
-                creep.x = x * 100 - 150;
-                creep.y = y * 100;
-                this.node.addChild(creep)
-            }
-
-        })
+    start() { },
+    setSoundVolume(number) {
+        cc.audioEngine.setVolume(this.sound, number);
     },
     update(dt) {
-
         this.setBg();
-        if (this._init) {
-            this.initMatrix()
-            this._init = false
-        }
         if (this.gameState == config.gameState.PLAYING) {
             this.bulletTime++;
-            // this.minhInitEnemy()
+            this._timer += dt
             if (this.bulletTime == 10) {
                 this.bulletTime = 0;
                 this.createBullet();
             }
-
             // this.spawnCreeps(dt);
             // this.spawnAssassins(dt);
             // this.spawnMotherShips(dt);
         }
     },
     init() {
-
         this.isBgMove = false;
         this.bg_1.y = 0;
         this.bg_2.y = this.bg_1.y + this.bg_1.height;
-        this.gameReady.zIndex = 1;
-        // this.gameOver.zIndex = -1;
-        this.gamePause.zIndex = 2;
+        this.gameReadyLayer.zIndex = 1;
+        // this.gameOverLayer.zIndex = -1;
+        this.gamePauseLayer.zIndex = 2;
         //this.score.zIndex = 3;
-        this.gameReady.active = true;
-        this.gamePlaying.active = false;
-        this.gamePause.active = false;
-        this.gameOver.active = false;
-
+        this.loadLayer(this.gameReadyLayer);
         this.bulletTime = 0;
         this.gameState = config.gameState.READY
         this.score.string = 0;
@@ -103,29 +115,15 @@ cc.Class({
         this.spawnCreepTime = 0
         this.spawnAssasinTime = 0
         this.spawnMotherShipTime = 0
-
         this.level = 1
-        this.spawnHero()
-    },
-    getData() {
-        this.waveCount = 0;
-        cc.loader.loadRes('waveconfig.json', function (err, object) {
-            if (err) {
-                cc.log(err)
-                return;
-            }
-            this._waveContent = object.json.wave;
-            this.waveCount = object.json.wavecount
-        }.bind(this))
     },
     setTouch() {
         this.node.on("touchstart", function (event) {
-            this.gameState = config.gameState.PLAYING;
-            this._init = true
-            this.gameReady.active = false;
-            this.gamePlaying.active = true;
-            //this.gameOver.active = false;
-            this.isBgMove = true;
+            // this.gameState = config.gameState.PLAYING;
+            // this.gameReadyLayer.active = false;
+            // this.gamePlayingLayer.active = true;
+            //this.gameOverLayer.active = false;
+            //this.isBgMove = true;
         }, this);
         this.node.on("touchmove", function (event) {
             if (this._hero.name != "") {
@@ -141,46 +139,48 @@ cc.Class({
         this.node.on("touchend", function (event) {
             cc.log("touchend")
         }, this)
-
     },
     gameFinished() {
-        cc.log("test")
         this.gameState = config.gameState.OVER;
         this.removeAllBullet()
         this.removeAllEnemy()
 
-        this.gameOver.active = true;
+        this.loadLayer(this.gameOverLayer)
         this.scoreOver.string = this.score.string;
     },
-    spawnCreeps(dt) {
-        this.spawnCreepTime += dt;
-        if (this.spawnCreepTime >= 1 / this.level) {
-            this.spawnCreepTime = 0;
-            this.createEnemy(this.pre_creep, 1)
-        }
-    },
-    spawnAssassins(dt) {
-        this.spawnAssasinTime += dt;
-        if (this.spawnAssasinTime >= 2 / this.level) {
-            this.spawnAssasinTime = 0;
-            this.createEnemy(this.pre_assassin, 2)
-        }
-    },
-    spawnMotherShips(dt) {
-        this.spawnMotherShipTime += dt;
-        if (this.spawnMotherShipTime >= 5 / this.level) {
-            this.spawnMotherShipTime = 0;
-            this.createEnemy(this.pre_motherShip, 0.2)
-        }
-    },
-    createEnemy(pre_enemy, speed) {
-        let x = Math.floor(Math.random() * 600) + 1 - 300; // -300 300
-        let y = Math.floor(Math.random() * 900) + 1 + 550; // 550 1450
+    // spawnCreeps(dt) {
+    //     this.spawnCreepTime += dt;
+    //     if (this.spawnCreepTime >= 1 / this.level) {
+    //         this.spawnCreepTime = 0;
+    //         this.createEnemy(this.pre_creep, 1)
+    //     }
+    // },
+    // spawnAssassins(dt) {
+    //     this.spawnAssasinTime += dt;
+    //     if (this.spawnAssasinTime >= 2 / this.level) {
+    //         this.spawnAssasinTime = 0;
+    //         this.createEnemy(this.pre_assassin, 2)
+    //     }
+    // },
+    // spawnMotherShips(dt) {
+    //     this.spawnMotherShipTime += dt;
+    //     if (this.spawnMotherShipTime >= 5 / this.level) {
+    //         this.spawnMotherShipTime = 0;
+    //         this.createEnemy(this.pre_motherShip, 0.2)
+    //     }
+    // },
+    createEnemy(pre_enemy, index) {
+        let x = (index) % this.allRow
+        let y = Math.floor(index / this.allRow);
         let enemy = cc.instantiate(pre_enemy)
+        enemy.setPosition(0, 1000)
         let js = enemy.getComponent("enemy")
-        js.speed = Math.floor(Math.random() * 2) + speed + this.level;
+        js.speed=2
+        js.targetpos=cc.v2(x * 100 - (100 * this.allRow / 2) + 50, y * 100)
+        // var fly = cc.moveTo(3, cc.v2(x * 100 - (100 * this.allRow / 2) + 50, y * 100))
+        // enemy.runAction(fly)
+        // enemy.setMoveTo(x * 100 - (100 * this.allRow / 2) + 50,y*100)
         enemy.parent = this.node
-        enemy.setPosition(cc.v2(x, y))
     },
     spawnHero() {
         this._hero = cc.instantiate(this.pre_hero)
@@ -239,35 +239,134 @@ cc.Class({
             }
         }
     },
+    loadLayer(node) {
+        let len = this._LayerList.length
+        for (let i = 0; i < len; i++) {
+            if (this._LayerList[i] === node)
+                this._LayerList[i].active = true;
+            else
+                this._LayerList[i].active = false;
+        }
+    },
+    onDestroy(){
+        cc.sys.localStorage.setItem('wave',JSON.stringtify(this.waveContent))
+    },
     clickBtn(sender, str) {
+        //cc.log(str)
         switch (str) {
+            case "play":
+                this.spawnHero();
+                this._waveNum = 1
+                mEmitter.instance.registerEvent(config.event.ENEMY_DESTROY, this.waveStatus.bind(this))
             case "resume":
-                cc.log("resume")
                 this.isBgMove = true;
-                this.gamePause.active = false;
-                this.gamePlaying.active = true;
+                this.loadLayer(this.gamePlayingLayer)
                 this.gameState = config.gameState.PLAYING;
                 mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState)
                 break;
             case "pause":
-                cc.log("pause")
-                //this.gameReady.active = false;
-                //this.gamePlaying.active = false;
-                this.gamePause.active = true;
-                //this.gameOver.active = false;
                 this.isBgMove = false;
+                this.loadLayer(this.gamePauseLayer)
                 this.gameState = config.gameState.PAUSE;
                 mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState)
                 break;
             case "restart":
-                cc.log("restart")
-                //this.gameOver.active = false;
+                this.isBgMove = false;
+                this.loadLayer(this.gameReadyLayer)
                 this.gameState = config.gameState.READY;
                 this.removeAllBullet()
                 this.removeAllEnemy()
                 this.removeHero()
                 this.init();
                 break;
+            case "skins":
+                this.loadLayer(this.heroSkinsLayer)
+                this.gameState = config.gameState.HEROSKINS;
+                break;
+            case "ranked":
+                this.loadLayer(this.rankedLayer)
+                this.gameState = config.gameState.RANKED;
+                break;
+            case "settings":
+                this.loadLayer(this.settingsLayer)
+                this.gameState = config.gameState.SETTINGS;
+                break;
+            case "back":
+                this.loadLayer(this.gameReadyLayer)
+                this.gameState = config.gameState.READY;
+                break;
+            default:
+                break;
+        }
+    },
+    //read json
+    getData() {
+        cc.loader.loadRes('waveconfig.json', this.getWaveData.bind(this))
+    },
+    getWaveData(err, obj) {
+        if (err) {
+            cc.log(err)
+            return;
+        }
+        this.waveContent = obj.json.wave
+        this.waveCount = obj.json.wavecount
+    },
+    waveStatus() {
+
+    },
+    initWave(waveNum) {
+
+        if (1 > this.waveCount) {
+            cc.log('overLoad');
+            this.gameFinished()
+            return;
+        }
+        cc.log(this.waveContent[waveNum])
+        let content = this.waveContent[waveNum].content;
+        this.totalEnemy = this.waveContent[waveNum].enemy;
+        this.allRow = this.waveContent[waveNum].allRow;
+        this.allCol = this.waveContent[waveNum].allCol;
+        cc.log(content)
+        let title = 'Wave ' + waveNum;
+        let sologan = this.waveContent[waveNum].sologan;
+        let waveTitle = this.waveTitle.getComponent('wavetitle')
+        waveTitle.setWave(title, sologan)
+        let blink = cc.blink(1, 3)
+        let hide = cc.fadeTo(3, 0)
+        let spawn = cc.spawn(hide, cc.callFunc(() => {
+            content.map((item, index) => {
+                switch (item) {
+                    case 1:
+                        {
+                            this.createEnemy(this.pre_creep, index)
+                            break;
+                        }
+                    case 2:
+                        {
+                            this.createEnemy(this.pre_assassin, index)
+                            break;
+                        }
+                    case 3:
+                        {
+                            this.createEnemy(this.pre_motherShip, index)
+                            break;
+                        }
+                    default: {
+                        break;
+                    }
+                }
+            })
+        }))
+        let waveAction = cc.sequence(blink, spawn)
+        waveAction.setTag(1)
+        this.waveTitle.runAction(waveAction)
+    },
+    waveStatus() {
+        this.totalEnemy--
+        cc.log(this.totalEnemy)
+        if (this.totalEnemy == 0) {
+            this._waveNum++
+            cc.log('Change wave')
         }
     },
 });

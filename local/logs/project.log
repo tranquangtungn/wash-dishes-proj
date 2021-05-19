@@ -1,84 +1,105 @@
-2021-05-18T07:18:39.821Z - normal: Load ~/.CocosCreator/settings.json
-2021-05-18T07:18:39.882Z - normal: Initializing Asset Database
-2021-05-18T07:18:39.884Z - normal: checking language setting...
-2021-05-18T07:18:39.884Z - normal: Language: en
-2021-05-18T07:18:40.597Z - success: preview server running at http://localhost:7456
-2021-05-18T07:18:40.609Z - success: protocol editor-framework registered
-2021-05-18T07:18:40.609Z - success: protocol app registered
-2021-05-18T07:18:40.609Z - success: protocol theme registered
-2021-05-18T07:18:40.609Z - success: protocol packages registered
-2021-05-18T07:18:40.609Z - success: protocol uuid registerred
-2021-05-18T07:18:40.609Z - success: protocol db registerred
-2021-05-18T07:18:40.609Z - success: protocol thumbnail registerred
-2021-05-18T07:18:40.609Z - success: protocol unpack registerred
-2021-05-18T07:18:40.610Z - success: protocol disable-commonjs registerred
-2021-05-18T07:18:42.253Z - normal: connected!
-2021-05-18T07:18:42.254Z - normal: Check project /Users/gemi/Desktop/18_5/wash-dishes-proj
-2021-05-18T07:18:42.256Z - normal: Initializing project /Users/gemi/Desktop/18_5/wash-dishes-proj
-2021-05-18T07:18:42.612Z - normal: Initializing Cocos2d
-2021-05-18T07:18:43.356Z - normal: Initializing engine extends
-2021-05-18T07:18:43.374Z - success: alipay-adapter loaded
-2021-05-18T07:18:43.380Z - success: asset-db-debugger loaded
-2021-05-18T07:18:43.382Z - success: baidu-adapter loaded
-2021-05-18T07:18:43.384Z - success: color-picker loaded
-2021-05-18T07:18:43.513Z - success: fb-audience-network loaded
-2021-05-18T07:18:43.562Z - success: fb-live-stream loaded
-2021-05-18T07:18:43.565Z - success: google-play-instant loaded
-2021-05-18T07:18:43.571Z - success: huawei-runtime loaded
-2021-05-18T07:18:43.808Z - success: cpk-publish loaded
-2021-05-18T07:18:43.809Z - success: jsb-adapter loaded
-2021-05-18T07:18:43.814Z - success: oppo-runtime loaded
-2021-05-18T07:18:43.820Z - success: package-manager loaded
-2021-05-18T07:18:43.947Z - success: qqplay-adapter loaded
-2021-05-18T07:18:43.950Z - success: runtime-dev-tools loaded
-2021-05-18T07:18:43.955Z - success: sdkbox loaded
-2021-05-18T07:18:43.960Z - success: tester loaded
-2021-05-18T07:18:43.964Z - success: ui-kit-preview-extra loaded
-2021-05-18T07:18:43.968Z - success: ui-kit-preview loaded
-2021-05-18T07:18:43.978Z - success: ui-kit loaded
-2021-05-18T07:18:43.984Z - success: vivo-runtime loaded
-2021-05-18T07:18:43.985Z - success: weapp-adapter loaded
-2021-05-18T07:18:43.987Z - success: xiaomi-adapter loaded
-2021-05-18T07:18:43.990Z - success: alipay-minigame loaded
-2021-05-18T07:18:44.036Z - success: assets loaded
-2021-05-18T07:18:44.040Z - success: builder loaded
-2021-05-18T07:18:44.269Z - success: cocos-services loaded
-2021-05-18T07:18:44.275Z - success: console loaded
-2021-05-18T07:18:44.308Z - success: fb-instant-games loaded
-2021-05-18T07:18:44.312Z - success: game-window loaded
-2021-05-18T07:18:44.314Z - success: google-instant-games loaded
-2021-05-18T07:18:44.319Z - success: hierarchy loaded
-2021-05-18T07:18:44.323Z - success: inspector loaded
-2021-05-18T07:18:44.324Z - success: keystore loaded
-2021-05-18T07:18:44.330Z - success: node-library loaded
-2021-05-18T07:18:44.332Z - success: package-asset loaded
-2021-05-18T07:18:44.333Z - success: preferences loaded
-2021-05-18T07:18:44.336Z - success: project-exporter loaded
-2021-05-18T07:18:44.342Z - success: project-importer loaded
-2021-05-18T07:18:44.345Z - success: project-settings loaded
-2021-05-18T07:18:44.350Z - success: scene loaded
-2021-05-18T07:18:44.351Z - success: simulator-debugger loaded
-2021-05-18T07:18:44.353Z - success: sprite-editor loaded
-2021-05-18T07:18:44.357Z - success: store loaded
-2021-05-18T07:18:44.366Z - success: timeline loaded
-2021-05-18T07:18:44.370Z - success: xiaomi-runtime loaded
-2021-05-18T07:18:44.499Z - success: im-plugin loaded
-2021-05-18T07:18:48.179Z - info: Cocos Services load base data!
-2021-05-18T07:18:49.831Z - normal: Loading packages
-2021-05-18T07:18:49.837Z - normal: Watching packages
-2021-05-18T07:18:49.933Z - normal: Run Application
-2021-05-18T07:31:22.828Z - warn: [db-task][sync-changes] Backup unused meta file: db://assets/res.meta
-2021-05-18T07:31:25.532Z - error: TypeError: Cannot read property 'animate' of null
-    at HTMLElement.fadeoutSelectRect (/Applications/CocosCreator.app/Contents/Resources/app.asar/editor/builtin/scene/gizmo/index.js:1:4148)
-    at Object.<anonymous> (/Applications/CocosCreator.app/Contents/Resources/app.asar/editor/builtin/scene/panel/tools/select/2d.js:1:2909)
-    at HTMLDocument.b (/Applications/CocosCreator.app/Contents/Resources/app.asar/editor-framework/lib/renderer/ui/utils/dom-utils.js:1:3526)
-2021-05-18T10:09:06.946Z - error: Property 'game._waveContent' must define at least one of 'default', 'get' or 'set'.
-    at Object.cc.errorID (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/CCDebug.js:167:16)
-    at Object.exports.preprocessAttrs (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/platform/preprocess-class.js:215:36)
-    at declareProperties (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/platform/CCClass.js:631:28)
-    at Object.CCClass [as Class] (/Applications/CocosCreator.app/Contents/Resources/engine/bin/.cache/dev/cocos2d/core/platform/CCClass.js:674:17)
-    at __define (/Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:10:4)
-    at /Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:270:13
-    at Object.<anonymous> (/Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:277:11)
-    at Object.<anonymous> (/Users/gemi/Desktop/18_5/wash-dishes-proj/temp/quick-scripts/assets/scripts/game.js:280:3)
-    at Module._compile (module.js:571:32)
+2021-05-19T02:43:43.484Z - normal: Load ~/.CocosCreator/settings.json
+2021-05-19T02:43:43.532Z - normal: Initializing Asset Database
+2021-05-19T02:43:43.534Z - normal: checking language setting...
+2021-05-19T02:43:43.534Z - normal: Language: en
+2021-05-19T02:43:44.305Z - success: preview server running at http://localhost:7456
+2021-05-19T02:43:44.315Z - success: protocol editor-framework registered
+2021-05-19T02:43:44.315Z - success: protocol app registered
+2021-05-19T02:43:44.315Z - success: protocol theme registered
+2021-05-19T02:43:44.315Z - success: protocol packages registered
+2021-05-19T02:43:44.315Z - success: protocol uuid registerred
+2021-05-19T02:43:44.315Z - success: protocol db registerred
+2021-05-19T02:43:44.315Z - success: protocol thumbnail registerred
+2021-05-19T02:43:44.316Z - success: protocol unpack registerred
+2021-05-19T02:43:44.316Z - success: protocol disable-commonjs registerred
+2021-05-19T02:43:46.024Z - normal: connected!
+2021-05-19T02:43:46.026Z - normal: Check project /Users/gemi/Desktop/18_5/wash-dishes-proj
+2021-05-19T02:43:46.027Z - normal: Initializing project /Users/gemi/Desktop/18_5/wash-dishes-proj
+2021-05-19T02:43:46.395Z - normal: Initializing Cocos2d
+2021-05-19T02:43:47.096Z - normal: Initializing engine extends
+2021-05-19T02:43:47.134Z - success: alipay-adapter loaded
+2021-05-19T02:43:47.143Z - success: asset-db-debugger loaded
+2021-05-19T02:43:47.148Z - success: baidu-adapter loaded
+2021-05-19T02:43:47.152Z - success: color-picker loaded
+2021-05-19T02:43:47.320Z - success: fb-audience-network loaded
+2021-05-19T02:43:47.385Z - success: fb-live-stream loaded
+2021-05-19T02:43:47.388Z - success: google-play-instant loaded
+2021-05-19T02:43:47.395Z - success: huawei-runtime loaded
+2021-05-19T02:43:47.624Z - success: cpk-publish loaded
+2021-05-19T02:43:47.625Z - success: jsb-adapter loaded
+2021-05-19T02:43:47.632Z - success: oppo-runtime loaded
+2021-05-19T02:43:47.638Z - success: package-manager loaded
+2021-05-19T02:43:47.785Z - success: qqplay-adapter loaded
+2021-05-19T02:43:47.788Z - success: runtime-dev-tools loaded
+2021-05-19T02:43:47.794Z - success: sdkbox loaded
+2021-05-19T02:43:47.798Z - success: tester loaded
+2021-05-19T02:43:47.802Z - success: ui-kit-preview-extra loaded
+2021-05-19T02:43:47.806Z - success: ui-kit-preview loaded
+2021-05-19T02:43:47.808Z - success: ui-kit loaded
+2021-05-19T02:43:47.814Z - success: vivo-runtime loaded
+2021-05-19T02:43:47.815Z - success: weapp-adapter loaded
+2021-05-19T02:43:47.817Z - success: xiaomi-adapter loaded
+2021-05-19T02:43:47.819Z - success: alipay-minigame loaded
+2021-05-19T02:43:47.855Z - success: assets loaded
+2021-05-19T02:43:47.858Z - success: builder loaded
+2021-05-19T02:43:48.134Z - success: cocos-services loaded
+2021-05-19T02:43:48.140Z - success: console loaded
+2021-05-19T02:43:48.168Z - success: fb-instant-games loaded
+2021-05-19T02:43:48.172Z - success: game-window loaded
+2021-05-19T02:43:48.173Z - success: google-instant-games loaded
+2021-05-19T02:43:48.178Z - success: hierarchy loaded
+2021-05-19T02:43:48.183Z - success: inspector loaded
+2021-05-19T02:43:48.185Z - success: keystore loaded
+2021-05-19T02:43:48.191Z - success: node-library loaded
+2021-05-19T02:43:48.193Z - success: package-asset loaded
+2021-05-19T02:43:48.195Z - success: preferences loaded
+2021-05-19T02:43:48.198Z - success: project-exporter loaded
+2021-05-19T02:43:48.203Z - success: project-importer loaded
+2021-05-19T02:43:48.206Z - success: project-settings loaded
+2021-05-19T02:43:48.211Z - success: scene loaded
+2021-05-19T02:43:48.212Z - success: simulator-debugger loaded
+2021-05-19T02:43:48.213Z - success: sprite-editor loaded
+2021-05-19T02:43:48.217Z - success: store loaded
+2021-05-19T02:43:48.224Z - success: timeline loaded
+2021-05-19T02:43:48.230Z - success: xiaomi-runtime loaded
+2021-05-19T02:43:48.344Z - success: im-plugin loaded
+2021-05-19T02:43:53.179Z - info: Cocos Services load base data!
+2021-05-19T02:43:53.675Z - normal: Loading packages
+2021-05-19T02:43:53.679Z - normal: Watching packages
+2021-05-19T02:43:53.758Z - normal: Run Application
+2021-05-19T04:06:47.703Z - failed: [db-task][sync-changes] Failed to import asset /Users/gemi/Desktop/18_5/wash-dishes-proj/assets/scripts/game.js, message: Compile error: TypeError: /Users/gemi/Desktop/18_5/wash-dishes-proj/assets/scripts/game.js: Duplicate declaration "title"
+  327 |         let title= 'Wave '+ waveNum;
+  328 |         let sologan = this.waveContent[waveNum].sologan;
+> 329 |         let title=this.waveTitle.getComponent('wavetitle')
+      |             ^
+  330 |         title.setWave(title,sologan)
+  331 |         title.testing()
+  332 |         content.map((item, index) => {
+    at File.buildCodeFrameError (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-core/lib/transformation/file/index.js:431:15)
+    at Scope.checkBlockScopedCollisions (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:398:27)
+    at Scope.registerBinding (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:592:16)
+    at Scope.registerDeclaration (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:496:14)
+    at Object.BlockScoped (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:244:28)
+    at Object.newFn (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/visitors.js:318:17)
+    at NodePath._call (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/path/context.js:76:18)
+    at NodePath.call (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/path/context.js:44:14)
+    at NodePath.visit (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/path/context.js:105:12)
+    at TraversalContext.visitQueue (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/context.js:150:16)
+2021-05-19T04:07:06.304Z - failed: [db-task][sync-changes] Failed to import asset /Users/gemi/Desktop/18_5/wash-dishes-proj/assets/scripts/game.js, message: Compile error: TypeError: /Users/gemi/Desktop/18_5/wash-dishes-proj/assets/scripts/game.js: Duplicate declaration "title"
+  327 |         let title= 'Wave '+ waveNum;
+  328 |         let sologan = this.waveContent[waveNum].sologan;
+> 329 |         let title=this.waveTitle.getComponent('wavetitle')
+      |             ^
+  330 |         title.setWave(title,sologan)
+  331 |         title.testing()
+  332 |         content.map((item, index) => {
+    at File.buildCodeFrameError (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-core/lib/transformation/file/index.js:431:15)
+    at Scope.checkBlockScopedCollisions (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:398:27)
+    at Scope.registerBinding (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:592:16)
+    at Scope.registerDeclaration (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:496:14)
+    at Object.BlockScoped (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/scope/index.js:244:28)
+    at Object.newFn (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/visitors.js:318:17)
+    at NodePath._call (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/path/context.js:76:18)
+    at NodePath.call (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/path/context.js:44:14)
+    at NodePath.visit (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/path/context.js:105:12)
+    at TraversalContext.visitQueue (/Applications/CocosCreator.app/Contents/Resources/app.asar/node_modules/babel-traverse/lib/context.js:150:16)
