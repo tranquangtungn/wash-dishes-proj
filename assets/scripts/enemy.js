@@ -1,6 +1,5 @@
 const mEmitter = require("mEmitter");
 const config = require("config");
-const { gameState } = require("./config");
 
 cc.Class({
     extends: cc.Component,
@@ -9,88 +8,98 @@ cc.Class({
         hit_frame: cc.SpriteFrame,
         hp: 5,
         speed: {
-            set: function (value) {
+            set: function(value) {
                 this._speed = value;
             },
         },
-        score: 1,
+
         targetpos: {
-            set: function (value) {
-                cc.log(value)
-                this._targetpos = value
-            }
+            set: function(value) {
+                this._targetpos = value;
+            },
         },
+
+        score: 1,
         _sprite: null,
         _anim: null,
         _gameState: null,
         _updateGameState: null,
-        _status: 'move'
-
+        _status: "move",
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
-        this._gameState = config.gameState.PLAYING
-        this._sprite = this.getComponent(cc.Sprite)
-        this.colider = this.getComponent(cc.PolygonCollider)
-        this._anim = this.getComponent(cc.Animation)
-        this._updateGameState = this.updateGameState.bind(this)
-        mEmitter.instance.registerEvent(config.event.UPDATE_GAMESTATE, this._updateGameState)
+        this._gameState = config.gameState.PLAYING;
+        this._sprite = this.getComponent(cc.Sprite);
+        this.colider = this.getComponent(cc.PolygonCollider);
+        this._anim = this.getComponent(cc.Animation);
+        this._updateGameState = this.updateGameState.bind(this);
+        mEmitter.instance.registerEvent(
+            config.event.UPDATE_GAMESTATE,
+            this._updateGameState
+        );
     },
-    // setMoveTo(x, y) {
-    //     cc.log(y)
-    // },
     updateGameState(data) {
-        this._gameState = data
-        if (data != config.gameState.PLAYING)
-            this._anim.stop()
-        else
-            this._anim.start()
+        this._gameState = data;
+        if (data != config.gameState.PLAYING) this._anim.stop();
+        else this._anim.start();
     },
     onEnemyKilled() {
-        mEmitter.instance.emit(config.event.ENEMY_DESTROY)
-        mEmitter.instance.removeEvent(config.event.UPDATE_GAMESTATE, this._updateGameState)
+        mEmitter.instance.emit(config.event.ENEMY_DESTROY);
+        mEmitter.instance.removeEvent(
+            config.event.UPDATE_GAMESTATE,
+            this._updateGameState
+        );
         this.node.destroy();
     },
-    onCollisionEnter: function (other, self) {
+    onCollisionEnter: function(other, self) {
         if (other.node.group == "bullet") {
             this.hp -= 1;
             if (this.hp == 0) {
-                this._anim.play(this._anim._clips[0]._name)
+                this._anim.play(this._anim._clips[0]._name);
                 cc.tween(this.node)
                     .delay(1)
                     .call(() => {
-                        mEmitter.instance.emit(config.event.UPDATE_SCORE, this.score)
-                        this.onEnemyKilled()
+                        mEmitter.instance.emit(config.event.UPDATE_SCORE, this.score);
+                        this.onEnemyKilled();
                     })
-                    .start()
+                    .start();
             } else if (this._sprite.spriteFrame !== this.hit_frame && this.hp > 0) {
-                this._sprite.spriteFrame = this.hit_frame
-                this._anim.stop()
+                this._sprite.spriteFrame = this.hit_frame;
+                this._anim.stop();
             }
         }
     },
 
     start() {
-        this.onAction()
+        this.onAction();
     },
+
     onPause() {
-        this._status = 'pause';
-        this.node.stopAction(this._fly)
+        this._status = "pause";
+        this.node.stopAction(this._fly);
     },
     onAction() {
-        var moveTo = cc.moveTo(3, this._targetpos)
-        this._fly = cc.sequence(moveTo, cc.callFunc(() => {
-            this._state = 'idle'
-        }))
-        this.node.runAction(this._fly)
+        cc.log(this._targetpos);
+        var moveTo = cc.moveTo(3, this._targetpos);
+        this._fly = cc.sequence(
+            moveTo,
+            cc.callFunc(() => {
+                this._state = "idle";
+            })
+        );
+        this.node.runAction(this._fly);
     },
+
     update(dt) {
-        if (this._gameState == config.gameState.PAUSE && this._status == 'move') {
-            this.onPause()
-        } else if (this._gameState == config.gameState.PLAYING && this._status == 'pause') {
-            this.node.runAction(this._fly)
-        }   
+        if (this._gameState == config.gameState.PAUSE && this._status == "move") {
+            this.onPause();
+        } else if (
+            this._gameState == config.gameState.PLAYING &&
+            this._status == "pause"
+        ) {
+            this.node.runAction(this._fly);
+        }
     },
 });

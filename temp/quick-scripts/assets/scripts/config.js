@@ -6,7 +6,8 @@ cc._RF.push(module, '988d8BgEq5JFJcfUTI7SKY0', 'config', __filename);
 
 var config = {
     event: {
-        UPDATE_VOLUME: "updateVolumn",
+        UPDATE_SOUND: "updateVolumn",
+        UPDATE_EFFECT: "updateEffect",
         UPDATE_SCORE: "changeScore",
         UPDATE_GAMESTATE: "updateGameState",
         REMOVE_BULLET: "removeBullet",
@@ -17,10 +18,14 @@ var config = {
         READY: "ready",
         PLAYING: "playing",
         OVER: "over",
-        PAUSE: "pause",
-        SETTINGS: "setting",
-        HEROSKINS: "skin",
-        RANKED: "ranked"
+        PAUSE: "pause"
+        // SETTINGS: "setting",
+        // HEROSKINS: "skin",
+        // RANKED: "ranked",
+    },
+    storageKey: {
+        SETTINGS: "settings",
+        LEADERBOARD: "leaderBoard"
     }
 };
 

@@ -119,6 +119,11 @@
     "_enabled": true,
     "damage": 1,
     "speed": 5,
+    "_gameState": "playing",
+    "_updateGameState": null,
+    "effect_src": {
+      "__uuid__": "7d908cb9-4d2b-4b89-acd9-c00ad734ead2"
+    },
     "_id": ""
   },
   {

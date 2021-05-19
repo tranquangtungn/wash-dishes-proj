@@ -12,11 +12,20 @@ cc.Class({
         damage: 1,
         speed: 5,
         _gameState: config.gameState.PLAYING,
-        _updateGameState: null
+        effect_src: {
+            default: null,
+            type: cc.AudioClip
+        }
     },
     onLoad: function onLoad() {
+        var js = this.node.parent.getComponent("game");
+        this.effect = cc.audioEngine.play(this.effect_src, false, js.effectVolume);
         this._updateGameState = this.updateGameState.bind(this);
         mEmitter.instance.registerEvent(config.event.UPDATE_GAMESTATE, this._updateGameState);
+    },
+    updateEffect: function updateEffect(number) {
+        cc.log("test");
+        cc.audioEngine.setVolume(this.effect, number);
     },
     updateGameState: function updateGameState(data) {
         this._gameState = data;
@@ -31,6 +40,7 @@ cc.Class({
     },
     onBulletKilled: function onBulletKilled() {
         mEmitter.instance.removeEvent(config.event.UPDATE_GAMESTATE, this._updateGameState);
+
         this.node.destroy();
     },
     update: function update(dt) {

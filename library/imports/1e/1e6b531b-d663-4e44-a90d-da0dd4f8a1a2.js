@@ -4,12 +4,10 @@ cc._RF.push(module, '1e6b5Mb1mNORKkN2g3U+KGi', 'game');
 
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var mEmitter = require("./mEmitter");
 var config = require("config");
 
-cc.Class(_defineProperty({
+cc.Class({
     extends: cc.Component,
 
     properties: {
@@ -42,28 +40,31 @@ cc.Class(_defineProperty({
         pre_motherShip: cc.Prefab,
         pre_bullet: cc.Prefab,
 
-        sound_clip: {
+        sound_src: {
             default: null,
             type: cc.AudioClip
         },
         _waveNum: {
             default: 1,
             type: cc.Integer,
-            notify: function notify() {
+            notify: function notify(index) {
                 this.initWave(this._waveNum);
             }
-        },
-        _timer: 0
+        }
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function onLoad() {
+        this.initLocalStorage();
+
         this._LayerList = [this.gameReadyLayer, this.gamePlayingLayer, this.gamePauseLayer, this.gameOverLayer, this.heroSkinsLayer, this.rankedLayer, this.settingsLayer];
-        var temp = cc.sys.localStorage.getItem('wave');
-        cc.log('Content');
-        cc.log(temp);
-        this.sound = cc.audioEngine.play(this.sound_clip, true, 0);
+
+        this.settings = JSON.parse(cc.sys.localStorage.getItem(config.storageKey.SETTINGS));
+        this.effectVolume = this.settings.effectVolume;
+        this.soundVolume = this.settings.soundVolume;
+        this.sound = cc.audioEngine.play(this.sound_src, true, this.soundVolume);
+
         //cc.log(this._LayerList)
         mEmitter.instance = new mEmitter();
         //cc.log(config.event.UPDATE_SCORE)
@@ -73,26 +74,75 @@ cc.Class(_defineProperty({
         this.getData();
         this.init();
         this.setTouch();
-        mEmitter.instance.registerEvent(config.event.UPDATE_VOLUME, this.setSoundVolume.bind(this));
+
+        mEmitter.instance.registerEvent(config.event.UPDATE_SOUND, this.setSoundVolume.bind(this));
+        mEmitter.instance.registerEvent(config.event.UPDATE_EFFECT, this.setEffectVolume.bind(this));
         mEmitter.instance.registerEvent(config.event.UPDATE_SCORE, this.updateScore.bind(this));
         mEmitter.instance.registerEvent(config.event.GAME_OVER, this.gameFinished.bind(this));
     },
+    initLocalStorage: function initLocalStorage() {
+        var settings = JSON.parse(cc.sys.localStorage.getItem(config.storageKey.SETTINGS));
+        if (!settings) {
+            cc.log("no storage");
+            settings = {
+                soundVolume: 0.5,
+                effectVolume: 0.5,
+                currentWave: 1,
+                currentScore: 0
+            };
+            cc.sys.localStorage.setItem(config.storageKey.SETTINGS, JSON.stringify(settings));
+        }
+        var leaderBoard = JSON.parse(cc.sys.localStorage.getItem(config.storageKey.LEADERBOARD));
+        if (!leaderBoard) {
+            cc.log("no storage");
+            leaderBoard = [{
+                name: "quangtung",
+                score: 300
+            }, {
+                name: "quangtung",
+                score: 200
+            }, {
+                name: "quangtung",
+                score: 100
+            }, {
+                name: "quangtung",
+                score: 300
+            }, {
+                name: "quangtung",
+                score: 200
+            }, {
+                name: "quangtung",
+                score: 100
+            }, {
+                name: "quangtung",
+                score: 300
+            }, {
+                name: "quangtung",
+                score: 200
+            }, {
+                name: "quangtung",
+                score: 100
+            }];
+            cc.sys.localStorage.setItem(config.storageKey.LEADERBOARD, JSON.stringify(leaderBoard));
+        }
+    },
     start: function start() {},
     setSoundVolume: function setSoundVolume(number) {
-        cc.audioEngine.setVolume(this.sound, number);
+        this.soundVolume = number;
+        cc.audioEngine.setVolume(this.sound, this.soundVolume);
+    },
+    setEffectVolume: function setEffectVolume(number) {
+        this.effectVolume = number;
     },
     update: function update(dt) {
         this.setBg();
         if (this.gameState == config.gameState.PLAYING) {
             this.bulletTime++;
-            this._timer += dt;
+
             if (this.bulletTime == 10) {
                 this.bulletTime = 0;
                 this.createBullet();
             }
-            // this.spawnCreeps(dt);
-            // this.spawnAssassins(dt);
-            // this.spawnMotherShips(dt);
         }
     },
     init: function init() {
@@ -102,6 +152,7 @@ cc.Class(_defineProperty({
         this.gameReadyLayer.zIndex = 1;
         // this.gameOverLayer.zIndex = -1;
         this.gamePauseLayer.zIndex = 2;
+        this.settingsLayer.zIndex = 2;
         //this.score.zIndex = 3;
         this.loadLayer(this.gameReadyLayer);
         this.bulletTime = 0;
@@ -142,28 +193,6 @@ cc.Class(_defineProperty({
         this.loadLayer(this.gameOverLayer);
         this.scoreOver.string = this.score.string;
     },
-
-    // spawnCreeps(dt) {
-    //     this.spawnCreepTime += dt;
-    //     if (this.spawnCreepTime >= 1 / this.level) {
-    //         this.spawnCreepTime = 0;
-    //         this.createEnemy(this.pre_creep, 1)
-    //     }
-    // },
-    // spawnAssassins(dt) {
-    //     this.spawnAssasinTime += dt;
-    //     if (this.spawnAssasinTime >= 2 / this.level) {
-    //         this.spawnAssasinTime = 0;
-    //         this.createEnemy(this.pre_assassin, 2)
-    //     }
-    // },
-    // spawnMotherShips(dt) {
-    //     this.spawnMotherShipTime += dt;
-    //     if (this.spawnMotherShipTime >= 5 / this.level) {
-    //         this.spawnMotherShipTime = 0;
-    //         this.createEnemy(this.pre_motherShip, 0.2)
-    //     }
-    // },
     createEnemy: function createEnemy(pre_enemy, index) {
         var x = index % this.allRow;
         var y = Math.floor(index / this.allRow);
@@ -172,9 +201,6 @@ cc.Class(_defineProperty({
         var js = enemy.getComponent("enemy");
         js.speed = 2;
         js.targetpos = cc.v2(x * 100 - 100 * this.allRow / 2 + 50, y * 100);
-        // var fly = cc.moveTo(3, cc.v2(x * 100 - (100 * this.allRow / 2) + 50, y * 100))
-        // enemy.runAction(fly)
-        // enemy.setMoveTo(x * 100 - (100 * this.allRow / 2) + 50,y*100)
         enemy.parent = this.node;
     },
     spawnHero: function spawnHero() {
@@ -235,9 +261,6 @@ cc.Class(_defineProperty({
             if (this._LayerList[i] === node) this._LayerList[i].active = true;else this._LayerList[i].active = false;
         }
     },
-    onDestroy: function onDestroy() {
-        cc.sys.localStorage.setItem('wave', JSON.stringtify(this.waveContent));
-    },
     clickBtn: function clickBtn(sender, str) {
         //cc.log(str)
         switch (str) {
@@ -268,28 +291,40 @@ cc.Class(_defineProperty({
                 break;
             case "skins":
                 this.loadLayer(this.heroSkinsLayer);
-                this.gameState = config.gameState.HEROSKINS;
+                //this.gameState = config.gameState.HEROSKINS;
                 break;
             case "ranked":
                 this.loadLayer(this.rankedLayer);
-                this.gameState = config.gameState.RANKED;
+                //this.gameState = config.gameState.RANKED;
                 break;
             case "settings":
                 this.loadLayer(this.settingsLayer);
-                this.gameState = config.gameState.SETTINGS;
+                // this.gameState = config.gameState.SETTINGS;
                 break;
             case "back":
-                this.loadLayer(this.gameReadyLayer);
-                this.gameState = config.gameState.READY;
+                if (this.gameState == config.gameState.READY) this.loadLayer(this.gameReadyLayer);else if (this.gameState == config.gameState.PAUSE) this.loadLayer(this.gamePauseLayer);
+                //this.saveLeaderBoard()
+                this.saveSettings();
                 break;
             default:
                 break;
         }
     },
+    saveLeaderBoard: function saveLeaderBoard() {},
+    saveSettings: function saveSettings() {
+        cc.log("save settings");
+        var settings = {
+            soundVolume: this.soundVolume,
+            effectVolume: this.effectVolume,
+            currentWave: 1,
+            currentScore: 0
+        };
+        cc.sys.localStorage.setItem(config.storageKey.SETTINGS, JSON.stringify(settings));
+    },
 
     //read json
     getData: function getData() {
-        cc.loader.loadRes('waveconfig.json', this.getWaveData.bind(this));
+        cc.loader.loadRes("waveconfig.json", this.getWaveData.bind(this));
     },
     getWaveData: function getWaveData(err, obj) {
         if (err) {
@@ -299,12 +334,11 @@ cc.Class(_defineProperty({
         this.waveContent = obj.json.wave;
         this.waveCount = obj.json.wavecount;
     },
-    waveStatus: function waveStatus() {},
     initWave: function initWave(waveNum) {
         var _this = this;
 
         if (1 > this.waveCount) {
-            cc.log('overLoad');
+            cc.log("overLoad");
             this.gameFinished();
             return;
         }
@@ -314,10 +348,11 @@ cc.Class(_defineProperty({
         this.allRow = this.waveContent[waveNum].allRow;
         this.allCol = this.waveContent[waveNum].allCol;
         cc.log(content);
-        var title = 'Wave ' + waveNum;
+        var title = "Wave " + waveNum;
         var sologan = this.waveContent[waveNum].sologan;
-        var waveTitle = this.waveTitle.getComponent('wavetitle');
-        waveTitle.setWave(title, sologan);
+        var waveTitle = this.waveTitle.children;
+        waveTitle[0].getComponent(cc.Label).string = title;
+        waveTitle[1].getComponent(cc.Label).string = sologan;
         var blink = cc.blink(1, 3);
         var hide = cc.fadeTo(3, 0);
         var spawn = cc.spawn(hide, cc.callFunc(function () {
@@ -346,16 +381,16 @@ cc.Class(_defineProperty({
             });
         }));
         var waveAction = cc.sequence(blink, spawn);
-        waveAction.setTag(1);
         this.waveTitle.runAction(waveAction);
+    },
+    waveStatus: function waveStatus() {
+        this.totalEnemy--;
+        cc.log(this.totalEnemy);
+        if (this.totalEnemy == 0) {
+            this._waveNum++;
+            cc.log("Change wave");
+        }
     }
-}, "waveStatus", function waveStatus() {
-    this.totalEnemy--;
-    cc.log(this.totalEnemy);
-    if (this.totalEnemy == 0) {
-        this._waveNum++;
-        cc.log('Change wave');
-    }
-}));
+});
 
 cc._RF.pop();
