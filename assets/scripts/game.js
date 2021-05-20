@@ -36,7 +36,7 @@ cc.Class({
 
         pre_bullet: cc.Prefab,
         pre_skillBullet: cc.Prefab,
-        pre_knifeBullet: cc.Prefab,
+        pre_skillShield: cc.Prefab,
 
         sound_src: {
             default: null,
@@ -49,6 +49,9 @@ cc.Class({
                 this.initWave(this._waveNum)
             },
         },
+
+        anim_hero: null,
+        anim_node: null
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -171,13 +174,9 @@ cc.Class({
     washDishes() {
         let positon = [
             cc.v2(-20, -20),
-
             cc.v2(-10, -10),
-
             cc.v2(0, 0),
-
             cc.v2(10, -10),
-
             cc.v2(20, -20),
 
         ]
@@ -185,12 +184,14 @@ cc.Class({
             for (let i = 0; i < 5; i++) {
                 cc.log(positon)
                 let pos = this._hero.getPosition();
-                let bullet = cc.instantiate(this.pre_skillBullet);
+                let bullet = cc.instantiate(this.pre_skillShield);
                 bullet.parent = this.node;
-                let x = pos.x + 5 * (i - 2);
-                let y = pos.y + this._hero.height / 2;
-                let js = bullet.getComponent("bullet");
+                //bullet.stopAction(bullet._action)
+                // let x = pos.x + 5 * (i - 2);
+                //let y = pos.y + this._hero.height / 2;
+
                 bullet.setPosition(cc.v2(pos.x, pos.y + this._hero.height / 2));
+                let js = bullet.getComponent("bullet");
                 let anim = cc.sequence(
                     cc.spawn(
                         cc.moveBy(0.5, 0, 20),
@@ -204,37 +205,43 @@ cc.Class({
                     cc.moveBy(0.1, positon[i], positon[i]),
                     cc.delayTime(0.4),
 
-                    cc.rotateBy(5, 360 * 120),
+                    cc.rotateBy(6, 360 * 120),
                     cc.callFunc(() => js.onBulletKilled())
 
                 )
                 js.action(anim)
-                this._hero.runAction(
-                    cc.repeat(
-                        cc.sequence(
-                            cc.spawn(
-                                cc.scaleTo(0.1, 1.1),
-                                cc.tintTo(0.1, 10, 50, 150),
-                            ),
-                            cc.spawn(
-                                cc.scaleTo(0.1, 1),
-                                cc.tintTo(0.1, 255, 255, 255)
-                            ),
+                this.anim_hero =
+                    cc.sequence(
+                        cc.delayTime(1.5),
+                        cc.repeat(
+                            cc.sequence(
+                                cc.spawn(
+                                    cc.scaleTo(0.1, 1.1),
+                                    cc.tintTo(0.1, 10, 50, 150),
+                                ),
+                                cc.spawn(
+                                    cc.scaleTo(0.1, 1),
+                                    cc.tintTo(0.1, 255, 255, 255)
+                                ),
 
-                        ), 32
+                            ), 32
+                        )
                     )
+                this._hero.runAction(this.anim_hero)
+                this.anim_node =
+                    cc.sequence(
+                        cc.delayTime(1.5),
+                        cc.repeat(
+                            cc.sequence(
+                                cc.callFunc(() => {
 
-                )
-                this.node.runAction(
-
-                    cc.repeat(
-                        cc.sequence(
-                            cc.callFunc(this.createKnife.bind(this)),
-                            cc.delayTime(0.2 + i)
-                        ), 50
+                                    this.createKnife(i)
+                                }),
+                                cc.delayTime(0.1)
+                            ), 64
+                        )
                     )
-                    //cc.callFunc(() => { cc.log("ccreate") }),
-                )
+                this.node.runAction(this.anim_node)
 
                 //js.action(seq)
 
@@ -248,20 +255,28 @@ cc.Class({
         // }
 
     },
-    createKnife() {
-        cc.log("washes dish")
-        let pos = this._hero.getPosition();
-        let posList = [
-            cc.v2(pos.x - 20, pos.y - 20 + this._hero.height / 2 + 20),
-            cc.v2(pos.x - 10, pos.y - 10 + this._hero.height / 2 + 20),
-            cc.v2(pos.x, pos.y + this._hero.height / 2),
-            cc.v2(pos.x + 10, pos.y - 10 + this._hero.height / 2 + 20),
-            cc.v2(pos.x + 20, pos.y - 20 + this._hero.height / 2 + 20),
-        ]
-        let num = Math.floor(Math.random() * 5)
-        let knife = cc.instantiate(this.pre_knifeBullet)
-        knife.parent = this.node;
-        knife.setPosition(posList[num])
+    createKnife(i) {
+        if (this._hero.name != "") {
+            //cc.log("washes dish")
+            let pos = this._hero.getPosition();
+            let posList = [
+                cc.v2(pos.x - 20, pos.y - 20 + this._hero.height / 2 + 20),
+                cc.v2(pos.x - 10, pos.y - 10 + this._hero.height / 2 + 20),
+                cc.v2(pos.x, pos.y + this._hero.height / 2 + 20),
+                cc.v2(pos.x + 10, pos.y - 10 + this._hero.height / 2 + 20),
+                cc.v2(pos.x + 20, pos.y - 20 + this._hero.height / 2 + 20),
+            ]
+            let num = Math.floor(Math.random() * 5)
+            let knife = cc.instantiate(this.pre_skillBullet)
+            knife.parent = this.node;
+            knife.setPosition(posList[i])
+            knife.angle = 20 - 10 * i;
+            let js = knife.getComponent("bullet");
+            let anim =
+                cc.moveBy(1, -800 * Math.tan(cc.misc.degreesToRadians(knife.angle)), 800)
+            js.action(anim)
+        }
+
     },
     start() { },
 
@@ -281,7 +296,7 @@ cc.Class({
             if (this.bulletTime == 10) {
                 this.bulletTime = 0;
                 //this.washDishes()
-                //this.createBullet();
+                // this.createBullet();
             }
         }
     },
@@ -328,7 +343,7 @@ cc.Class({
                     if (x < 280 && x > -280)
                         if (y < 400 && y > -400) {
                             this._hero.setPosition(cc.v2(pos_hero.x + pos_mov.x, pos_hero.y + pos_mov.y))
-                            let skill = this.node.getComponentsInChildren("bullet")
+                            let skill = this.node.getComponentsInChildren("skillShield")
                             skill.forEach(element => {
                                 let pos_elm = element.node.getPosition();
                                 element.node.setPosition(cc.v2(pos_elm.x + pos_mov.x, pos_elm.y + pos_mov.y))
@@ -431,20 +446,28 @@ cc.Class({
         switch (str) {
             case "play":
                 this.spawnHero();
-                this.washDishes();
+
                 this._waveNum = 1
                 mEmitter.instance.registerEvent(config.event.ENEMY_DESTROY, this.waveStatus.bind(this))
+                this.isBgMove = true;
+                this.loadLayer(this.gamePlayingLayer);
+                this.gameState = config.gameState.PLAYING;
+                mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState);
+                this.washDishes();
+                break;
             case "resume":
                 this.isBgMove = true;
                 this.loadLayer(this.gamePlayingLayer);
                 this.gameState = config.gameState.PLAYING;
                 mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState);
+                this.resumeAllActions()
                 break;
             case "pause":
                 this.isBgMove = false;
                 this.loadLayer(this.gamePauseLayer);
                 this.gameState = config.gameState.PAUSE;
                 mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState);
+                this.pauseAllActions()
                 break;
             case "restart":
                 this.isBgMove = false;
@@ -478,6 +501,18 @@ cc.Class({
             default:
                 break;
         }
+    },
+    pauseAllActions() {
+        cc.log("pause")
+        this.node.pauseAllActions()
+        this._hero.pauseAllActions()
+
+
+    },
+    resumeAllActions() {
+        cc.log("resume")
+        this.node.resumeAllActions()
+        this._hero.resumeAllActions()
     },
     saveLeaderBoard() { },
     saveSettings() {

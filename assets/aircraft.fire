@@ -153,7 +153,7 @@
       "__type__": "cc.Vec3",
       "x": 0,
       "y": 0,
-      "z": 471.1178196587347
+      "z": 381.91720306893745
     },
     "_scale": {
       "__type__": "cc.Vec3",
@@ -9839,12 +9839,14 @@
     "pre_skillBullet": {
       "__uuid__": "cb1ec303-3e57-489c-968b-0581d188bb5d"
     },
-    "pre_knifeBullet": {
-      "__uuid__": "210ae08a-6798-4a43-a985-9a5548e68929"
+    "pre_skillShield": {
+      "__uuid__": "a63cfe7c-caab-456c-a30c-53028f0140d8"
     },
     "sound_src": {
       "__uuid__": "c756a528-611f-49fc-9391-2c33eefca831"
     },
+    "anim_hero": null,
+    "anim_node": null,
     "_N$_waveNum": 0,
     "_id": "b8wE1i9JJCTJyk1mZM9jQw"
   },

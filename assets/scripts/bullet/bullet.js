@@ -13,18 +13,18 @@ cc.Class({
         _action: null
     },
     action: function (action) {
-        cc.log("action parent bullet")
+        //cc.log("action parent bullet")
         if (action) {
-            this.node.stopAction(this._action)
+
             this._action = action
         }
         else
-            this._action = cc.moveBy(1, 0, 400).repeatForever()
+            this._action = cc.moveBy(1, 0, 800).repeatForever()
 
     },
     onLoad() {
-        this.action();
-        this.node.runAction(this._action)
+        // this.action();
+        // this.node.runAction(this._action)
         let js = this.node.parent.getComponent("game");
         this.effect = cc.audioEngine.play(this.effect_src, false, js.effectVolume);
         this._updateGameState = this.updateGameState.bind(this)
@@ -36,11 +36,12 @@ cc.Class({
         cc.audioEngine.setVolume(this.effect, number);
     },
     updateGameState(data) {
+        cc.log("update state")
         this._gameState = data
         if (this._gameState == config.gameState.PLAYING)
-            this.node.runAction(this._action)
+            this.node.resumeAllActions()
         else if (this._gameState == config.gameState.PAUSE)
-            this.node.pauseAction(this._action)
+            this.node.pauseAllActions()
 
     },
     start() {
