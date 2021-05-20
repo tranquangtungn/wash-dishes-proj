@@ -41,7 +41,7 @@ cc.Class({
         _waveNum: {
             default: 1,
             type: cc.Integer,
-            notify: function(index) {
+            notify: function (index) {
                 this.initWave(this._waveNum)
             },
         },
@@ -119,41 +119,41 @@ cc.Class({
         if (!leaderBoard) {
             cc.log("no storage");
             leaderBoard = [{
-                    name: "quangtung",
-                    score: 300,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 100,
-                },
-                {
-                    name: "quangtung",
-                    score: 300,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 100,
-                },
-                {
-                    name: "quangtung",
-                    score: 300,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 100,
-                },
+                name: "quangtung",
+                score: 300,
+            },
+            {
+                name: "quangtung",
+                score: 200,
+            },
+            {
+                name: "quangtung",
+                score: 100,
+            },
+            {
+                name: "quangtung",
+                score: 300,
+            },
+            {
+                name: "quangtung",
+                score: 200,
+            },
+            {
+                name: "quangtung",
+                score: 100,
+            },
+            {
+                name: "quangtung",
+                score: 300,
+            },
+            {
+                name: "quangtung",
+                score: 200,
+            },
+            {
+                name: "quangtung",
+                score: 100,
+            },
             ];
             cc.sys.localStorage.setItem(
                 config.storageKey.LEADERBOARD,
@@ -161,7 +161,7 @@ cc.Class({
             );
         }
     },
-    start() {},
+    start() { },
 
     setSoundVolume(number) {
         this.soundVolume = number;
@@ -203,7 +203,7 @@ cc.Class({
     setTouch() {
         this.node.on(
             "touchstart",
-            function(event) {
+            function (event) {
                 // this.gameState = config.gameState.PLAYING;
                 // this.gameReadyLayer.active = false;
                 // this.gamePlayingLayer.active = true;
@@ -214,21 +214,24 @@ cc.Class({
         );
         this.node.on(
             "touchmove",
-            function(event) {
+            function (event) {
                 if (this._hero.name != "") {
                     let pos_hero = this._hero.getPosition();
                     let pos_mov = event.getDelta();
                     let x = pos_hero.x + pos_mov.x;
                     let y = pos_hero.y + pos_mov.y;
                     if (x < 280 && x > -280)
-                        if (y < 400 && y > -400) this._hero.setPosition(cc.v2(x, y));
+                        if (y < 400 && y > -400) { 
+                            mEmitter.instance.emit('shipMoving',cc.v2(x,y))
+                            this._hero.setPosition(cc.v2(x, y)); 
+                        }
                 }
             },
             this
         );
         this.node.on(
             "touchend",
-            function(event) {
+            function (event) {
                 cc.log("touchend");
             },
             this
@@ -319,7 +322,7 @@ cc.Class({
         switch (str) {
             case "play":
                 this.spawnHero();
-                this._waveNum = 1
+                this._waveNum = 5
                 mEmitter.instance.registerEvent(config.event.ENEMY_DESTROY, this.waveStatus.bind(this))
             case "resume":
                 this.isBgMove = true;
@@ -366,7 +369,7 @@ cc.Class({
                 break;
         }
     },
-    saveLeaderBoard() {},
+    saveLeaderBoard() { },
     saveSettings() {
         cc.log("save settings");
         let settings = {
