@@ -20,11 +20,12 @@ cc.Class({
         },
 
         score: 1,
+        _deltaTime:0,
         _sprite: null,
         _anim: null,
         _gameState: null,
         _updateGameState: null,
-        _status: "move",
+        _actionTime:0
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -42,8 +43,15 @@ cc.Class({
     },
     updateGameState(data) {
         this._gameState = data;
-        if (data != config.gameState.PLAYING) this._anim.stop();
-        else this._anim.start();
+        if (data != config.gameState.PLAYING) {
+            this._anim.stop();
+            this.onPause();
+        }
+
+        else {
+            this._anim.start();
+            this.onAction()
+        }
     },
     onEnemyKilled() {
         mEmitter.instance.emit(config.event.ENEMY_DESTROY);
@@ -78,11 +86,16 @@ cc.Class({
 
     onPause() {
         this._status = "pause";
+        let currentPos=this.node.position
+        let disX=Math.pow(currentPos.x,2)
+        let disY=Math.pow(currentPos.y-1000,2)
+        let dis=Math.sqrt(disX+disY)
+        this._deltaTime=dis*3/(this._targetpos.y-1000)
         this.node.stopAction(this._fly);
     },
     onAction() {
-        cc.log(this._targetpos);
-        var moveTo = cc.moveTo(3, this._targetpos);
+        cc.log(this._deltaTime)
+        var moveTo = cc.moveTo(3+this._deltaTime, this._targetpos);
         this._fly = cc.sequence(
             moveTo,
             cc.callFunc(() => {
@@ -93,13 +106,13 @@ cc.Class({
     },
 
     update(dt) {
-        if (this._gameState == config.gameState.PAUSE && this._status == "move") {
-            this.onPause();
-        } else if (
-            this._gameState == config.gameState.PLAYING &&
-            this._status == "pause"
-        ) {
-            this.node.runAction(this._fly);
-        }
+        // if (this._gameState == config.gameState.PAUSE && this._status == "move") {
+        //     this.onPause();
+        // } else if (
+        //     this._gameState == config.gameState.PLAYING &&
+        //     this._status == "pause"
+        // ) {
+        //     this.node.runAction(this._fly);
+        // }
     },
 });

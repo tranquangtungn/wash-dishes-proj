@@ -398,12 +398,12 @@ cc.Class({
             this.gameFinished();
             return;
         }
-        cc.log(this.waveContent[waveNum]);
+
         let content = this.waveContent[waveNum].content;
         this.totalEnemy = this.waveContent[waveNum].enemy;
         this.allRow = this.waveContent[waveNum].allRow;
         this.allCol = this.waveContent[waveNum].allCol;
-        cc.log(content);
+
         let title = "Wave " + waveNum;
         let sologan = this.waveContent[waveNum].sologan;
         let waveTitle = this.waveTitle.children;
@@ -444,10 +444,8 @@ cc.Class({
     },
     waveStatus() {
         this.totalEnemy--;
-        cc.log(this.totalEnemy);
         if (this.totalEnemy == 0) {
             this._waveNum++;
-            cc.log("Change wave");
         }
     },
 });
