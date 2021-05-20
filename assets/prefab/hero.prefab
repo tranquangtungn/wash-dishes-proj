@@ -18,7 +18,7 @@
     "_parent": null,
     "_children": [],
     "_active": true,
-    "_level": 4,
+    "_level": 1,
     "_components": [
       {
         "__id__": 2
@@ -39,9 +39,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 150,
+      "g": 150,
+      "b": 200,
       "a": 255
     },
     "_contentSize": {
@@ -486,7 +486,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "7d5d05ec-66f3-423d-b46e-763bcad2ab68"
     },
     "fileId": "ef88ikx9tM+a4VgL7bkTSv",
     "sync": false

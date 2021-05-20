@@ -10,8 +10,21 @@ cc.Class({
             default: null,
             type: cc.AudioClip
         },
+        _action: null
+    },
+    action: function (action) {
+        cc.log("action parent bullet")
+        if (action) {
+            this.node.stopAction(this._action)
+            this._action = action
+        }
+        else
+            this._action = cc.moveBy(1, 0, 400).repeatForever()
+
     },
     onLoad() {
+        this.action();
+        this.node.runAction(this._action)
         let js = this.node.parent.getComponent("game");
         this.effect = cc.audioEngine.play(this.effect_src, false, js.effectVolume);
         this._updateGameState = this.updateGameState.bind(this)
@@ -24,9 +37,15 @@ cc.Class({
     },
     updateGameState(data) {
         this._gameState = data
+        if (this._gameState == config.gameState.PLAYING)
+            this.node.runAction(this._action)
+        else if (this._gameState == config.gameState.PAUSE)
+            this.node.pauseAction(this._action)
+
     },
     start() {
-
+        this.action(this._action);
+        this.node.runAction(this._action)
     },
     onCollisionEnter: function (other, self) {
         let a = other.node.group == "enemy"
@@ -42,8 +61,8 @@ cc.Class({
 
     },
     update(dt) {
-        if (this._gameState == config.gameState.PLAYING)
-            this.node.y += this.speed;
+        // if (this._gameState == config.gameState.PLAYING)
+        //     this.node.y += this.speed;
         if (this.node.y >= 460) {
             this.onBulletKilled()
         }

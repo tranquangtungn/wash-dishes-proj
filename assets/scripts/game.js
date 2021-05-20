@@ -32,7 +32,11 @@ cc.Class({
         pre_creep: cc.Prefab,
         pre_assassin: cc.Prefab,
         pre_motherShip: cc.Prefab,
+
+
         pre_bullet: cc.Prefab,
+        pre_skillBullet: cc.Prefab,
+        pre_knifeBullet: cc.Prefab,
 
         sound_src: {
             default: null,
@@ -41,7 +45,7 @@ cc.Class({
         _waveNum: {
             default: 1,
             type: cc.Integer,
-            notify: function(index) {
+            notify: function (index) {
                 this.initWave(this._waveNum)
             },
         },
@@ -79,6 +83,7 @@ cc.Class({
         this.init();
         this.setTouch();
 
+
         mEmitter.instance.registerEvent(
             config.event.UPDATE_SOUND,
             this.setSoundVolume.bind(this)
@@ -95,6 +100,7 @@ cc.Class({
             config.event.GAME_OVER,
             this.gameFinished.bind(this)
         );
+
     },
     initLocalStorage() {
         let settings = JSON.parse(
@@ -119,41 +125,41 @@ cc.Class({
         if (!leaderBoard) {
             cc.log("no storage");
             leaderBoard = [{
-                    name: "quangtung",
-                    score: 300,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 100,
-                },
-                {
-                    name: "quangtung",
-                    score: 300,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 100,
-                },
-                {
-                    name: "quangtung",
-                    score: 300,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 100,
-                },
+                name: "quangtung",
+                score: 300,
+            },
+            {
+                name: "quangtung",
+                score: 200,
+            },
+            {
+                name: "quangtung",
+                score: 100,
+            },
+            {
+                name: "quangtung",
+                score: 300,
+            },
+            {
+                name: "quangtung",
+                score: 200,
+            },
+            {
+                name: "quangtung",
+                score: 100,
+            },
+            {
+                name: "quangtung",
+                score: 300,
+            },
+            {
+                name: "quangtung",
+                score: 200,
+            },
+            {
+                name: "quangtung",
+                score: 100,
+            },
             ];
             cc.sys.localStorage.setItem(
                 config.storageKey.LEADERBOARD,
@@ -161,7 +167,103 @@ cc.Class({
             );
         }
     },
-    start() {},
+
+    washDishes() {
+        let positon = [
+            cc.v2(-20, -20),
+
+            cc.v2(-10, -10),
+
+            cc.v2(0, 0),
+
+            cc.v2(10, -10),
+
+            cc.v2(20, -20),
+
+        ]
+        if (this._hero.name != "") {
+            for (let i = 0; i < 5; i++) {
+                cc.log(positon)
+                let pos = this._hero.getPosition();
+                let bullet = cc.instantiate(this.pre_skillBullet);
+                bullet.parent = this.node;
+                let x = pos.x + 5 * (i - 2);
+                let y = pos.y + this._hero.height / 2;
+                let js = bullet.getComponent("bullet");
+                bullet.setPosition(cc.v2(pos.x, pos.y + this._hero.height / 2));
+                let anim = cc.sequence(
+                    cc.spawn(
+                        cc.moveBy(0.5, 0, 20),
+                        cc.sequence(
+                            cc.delayTime(0.1 * i),
+                            cc.rotateBy(0.5, 360 * 2)
+                        ),
+
+                    ),
+                    cc.delayTime(0.1 * (5 - i)),
+                    cc.moveBy(0.1, positon[i], positon[i]),
+                    cc.delayTime(0.4),
+
+                    cc.rotateBy(5, 360 * 120),
+                    cc.callFunc(() => js.onBulletKilled())
+
+                )
+                js.action(anim)
+                this._hero.runAction(
+                    cc.repeat(
+                        cc.sequence(
+                            cc.spawn(
+                                cc.scaleTo(0.1, 1.1),
+                                cc.tintTo(0.1, 10, 50, 150),
+                            ),
+                            cc.spawn(
+                                cc.scaleTo(0.1, 1),
+                                cc.tintTo(0.1, 255, 255, 255)
+                            ),
+
+                        ), 32
+                    )
+
+                )
+                this.node.runAction(
+
+                    cc.repeat(
+                        cc.sequence(
+                            cc.callFunc(this.createKnife.bind(this)),
+                            cc.delayTime(0.2 + i)
+                        ), 50
+                    )
+                    //cc.callFunc(() => { cc.log("ccreate") }),
+                )
+
+                //js.action(seq)
+
+            }
+        }
+        // for (let i = 0; i < 5; i++) {
+        //     let skillBullet = cc.instantiate(this.pre_skillBullet)
+        //     skillBullet.parent = this.node;
+        //     let pos = this._hero.getPosition();
+        //     bullet.setPosition(cc.v2(pos.x, pos.y + this._hero.height / 2));
+        // }
+
+    },
+    createKnife() {
+        cc.log("washes dish")
+        let pos = this._hero.getPosition();
+        let posList = [
+            cc.v2(pos.x - 20, pos.y - 20 + this._hero.height / 2 + 20),
+            cc.v2(pos.x - 10, pos.y - 10 + this._hero.height / 2 + 20),
+            cc.v2(pos.x, pos.y + this._hero.height / 2),
+            cc.v2(pos.x + 10, pos.y - 10 + this._hero.height / 2 + 20),
+            cc.v2(pos.x + 20, pos.y - 20 + this._hero.height / 2 + 20),
+        ]
+        let num = Math.floor(Math.random() * 5)
+        let knife = cc.instantiate(this.pre_knifeBullet)
+        knife.parent = this.node;
+        knife.setPosition(posList[num])
+    },
+    start() { },
 
     setSoundVolume(number) {
         this.soundVolume = number;
@@ -171,13 +273,15 @@ cc.Class({
         this.effectVolume = number;
     },
     update(dt) {
+        //cc.log(this.node.children)
         this.setBg();
         if (this.gameState == config.gameState.PLAYING) {
             this.bulletTime++;
 
             if (this.bulletTime == 10) {
                 this.bulletTime = 0;
-                this.createBullet();
+                //this.washDishes()
+                //this.createBullet();
             }
         }
     },
@@ -203,7 +307,7 @@ cc.Class({
     setTouch() {
         this.node.on(
             "touchstart",
-            function(event) {
+            function (event) {
                 // this.gameState = config.gameState.PLAYING;
                 // this.gameReadyLayer.active = false;
                 // this.gamePlayingLayer.active = true;
@@ -214,21 +318,29 @@ cc.Class({
         );
         this.node.on(
             "touchmove",
-            function(event) {
+            function (event) {
+                //this.washDishes();
                 if (this._hero.name != "") {
                     let pos_hero = this._hero.getPosition();
                     let pos_mov = event.getDelta();
                     let x = pos_hero.x + pos_mov.x;
                     let y = pos_hero.y + pos_mov.y;
                     if (x < 280 && x > -280)
-                        if (y < 400 && y > -400) this._hero.setPosition(cc.v2(x, y));
+                        if (y < 400 && y > -400) {
+                            this._hero.setPosition(cc.v2(pos_hero.x + pos_mov.x, pos_hero.y + pos_mov.y))
+                            let skill = this.node.getComponentsInChildren("bullet")
+                            skill.forEach(element => {
+                                let pos_elm = element.node.getPosition();
+                                element.node.setPosition(cc.v2(pos_elm.x + pos_mov.x, pos_elm.y + pos_mov.y))
+                            });
+                        }
                 }
             },
             this
         );
         this.node.on(
             "touchend",
-            function(event) {
+            function (event) {
                 cc.log("touchend");
             },
             this
@@ -319,6 +431,7 @@ cc.Class({
         switch (str) {
             case "play":
                 this.spawnHero();
+                this.washDishes();
                 this._waveNum = 1
                 mEmitter.instance.registerEvent(config.event.ENEMY_DESTROY, this.waveStatus.bind(this))
             case "resume":
@@ -366,7 +479,7 @@ cc.Class({
                 break;
         }
     },
-    saveLeaderBoard() {},
+    saveLeaderBoard() { },
     saveSettings() {
         cc.log("save settings");
         let settings = {
