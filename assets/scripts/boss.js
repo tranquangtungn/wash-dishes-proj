@@ -7,7 +7,8 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] https://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
-const Emitter = require("mEmitter");
+const mEmitter = require("mEmitter");
+const config = require("config");
 cc.Class({
     extends: cc.Component,
 
@@ -20,31 +21,95 @@ cc.Class({
             default: null,
             type: cc.Sprite,
         },
+        // ammo_laser: {
+        //     default: null,
+        //     type: cc.Prefab
+        // },
+        hp_bar: {
+            default: null,
+            type: cc.ProgressBar,
+        },
+        _angleTurret: 0,
+        _hpBoss: {
+            default:50,
+            serializable:false
+        },
+        _ready: false,
+        _timer: 0
     },
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
-        Emitter.instance.registerEvent("shipMoving", this.trackingShip.bind(this));
+        this.tracking = this.trackingShip.bind(this)
+        mEmitter.instance.registerEvent("shipMoving", this.tracking);
+    },
+    onEnemyKilled() {
+        // mEmitter.instance.emit(config.event.ENEMY_DESTROY);
+        // mEmitter.instance.removeEvent(
+        //     config.event.UPDATE_GAMESTATE,
+        //     this._updateGameState
+        // );
+        mEmitter.instance.removeEvent("shipMoving", this.tracking)
+        this.node.destroy();
     },
     trackingShip(arg) {
-        let dir =
-            Math.pow(arg.x - this.node.x, 2) + Math.pow(arg.y - this.node.y, 2);
-        let opposite = Math.abs(arg.x - this.node.x);
-        let hypotenuse = Math.sqrt(dir);
-        let alpha = (Math.asin(opposite / hypotenuse) * 180) / Math.PI;
-        let dirr = 1;
-        if (arg.x > this.node.x) {
-            dirr = -1;
-        } else if (arg.x < this.node.x) {
-            dirr = 1;
+        if (this._ready) {
+            this._targetPos = arg
+            let dir =
+                Math.pow(arg.x - this.node.x, 2) + Math.pow(arg.y - this.node.y, 2);
+            let opposite = Math.abs(arg.x - this.node.x);
+            let hypotenuse = Math.sqrt(dir);
+            let alpha = (Math.asin(opposite / hypotenuse) * 180) / Math.PI;
+            let dirr = 1;
+            if (arg.x > this.node.x) {
+                dirr = -1;
+            } else if (arg.x < this.node.x) {
+                dirr = 1;
+            }
+            if (arg.y > this.node.y) {
+                alpha = 90 - alpha + 90
+            }
+            this._angleTurret = -(alpha * dirr);
+            this.turret.node.angle = this._angleTurret;
         }
-        if (arg.y > this.node.y) {
-            alpha = 90 - alpha + 90
+    },
+    onCollisionEnter: function (other, self) {
+        if (other.node.group == 'bullet') {
+            cc.log(1 / this._hpBoss)
+            this.hp_bar.progress += 1 / this._hpBoss
+            cc.log(this.hp_bar.progress)
+            if (this.hp_bar.progress == 1) {
+                this.outOfHp()
+            }
         }
-        this.turret.node.angle = -(alpha * dirr);
+    },
+    outOfHp() {
+        mEmitter.instance.emit('bossout',this._hpBoss)
+        this._ready=false
+        this.node.stopAllActions()
+        this.node.destroy()
+    },
+    start() {
+        cc.log('ditme')
+        let move = cc.moveTo(3, { y: 100, x: 0 })
+        let seq = cc.sequence(move, cc.callFunc(() => {
+            cc.log(this._hpBoss)
+            this._ready = true
+        }))
+        this.node.runAction(seq)
+    },
+    onShoot() {
+        mEmitter.instance.emit('golaser', this._angleTurret)
     },
 
-    start() {},
+    update(dt) {
+        this._timer += dt
+        if (this._ready) {
+            if (this._timer > 2) {
+                this.onShoot()
+                this._timer = 0
+            }
+        }
 
-    // update (dt) {},
+    },
 });

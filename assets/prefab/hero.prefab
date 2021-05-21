@@ -18,7 +18,7 @@
     "_parent": null,
     "_children": [],
     "_active": true,
-    "_level": 4,
+    "_level": 1,
     "_components": [
       {
         "__id__": 2
@@ -486,7 +486,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "7d5d05ec-66f3-423d-b46e-763bcad2ab68"
     },
     "fileId": "ef88ikx9tM+a4VgL7bkTSv",
     "sync": false
