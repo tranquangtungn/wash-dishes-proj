@@ -25,14 +25,15 @@ cc.Class({
         //     default: null,
         //     type: cc.Prefab
         // },
+        _gameState: null,
         hp_bar: {
             default: null,
             type: cc.ProgressBar,
         },
         _angleTurret: 0,
         _hpBoss: {
-            default:50,
-            serializable:false
+            default: 50,
+            serializable: false
         },
         _ready: false,
         _timer: 0
@@ -40,8 +41,23 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
+        this._gameState = config.gameState.PLAYING
         this.tracking = this.trackingShip.bind(this)
+        this.gameOver = this.gameOver.bind(this)
         mEmitter.instance.registerEvent("shipMoving", this.tracking);
+        mEmitter.instance.registerEvent(config.event.GAME_OVER, this.gameOver)
+    },
+    updateGameState(data) {
+        this._gameState = data;
+        cc.log(data)
+            // if (this._gameState == config.gameState.OVER) {
+            //     cc.log(lol)
+            //     this.node.destroy()
+            // }
+    },
+    gameOver() {
+        mEmitter.instance.removeEvent(config.event.GAME_OVER, this.gameOver)
+        this.node.destroy()
     },
     onEnemyKilled() {
         // mEmitter.instance.emit(config.event.ENEMY_DESTROY);
@@ -49,7 +65,7 @@ cc.Class({
         //     config.event.UPDATE_GAMESTATE,
         //     this._updateGameState
         // );
-        mEmitter.instance.removeEvent("shipMoving", this.tracking)
+        // mEmitter.instance.removeEvent("shipMoving", this.tracking)
         this.node.destroy();
     },
     trackingShip(arg) {
@@ -73,24 +89,23 @@ cc.Class({
             this.turret.node.angle = this._angleTurret;
         }
     },
-    onCollisionEnter: function (other, self) {
+    onCollisionEnter: function(other, self) {
         if (other.node.group == 'bullet') {
             cc.log(1 / this._hpBoss)
             this.hp_bar.progress += 1 / this._hpBoss
             cc.log(this.hp_bar.progress)
-            if (this.hp_bar.progress == 1) {
+            if (this.hp_bar.progress >= 1) {
                 this.outOfHp()
             }
         }
     },
     outOfHp() {
-        mEmitter.instance.emit('bossout',this._hpBoss)
-        this._ready=false
+        mEmitter.instance.emit('bossout', this._hpBoss)
+        this._ready = false
         this.node.stopAllActions()
         this.node.destroy()
     },
     start() {
-        cc.log('ditme')
         let move = cc.moveTo(3, { y: 100, x: 0 })
         let seq = cc.sequence(move, cc.callFunc(() => {
             cc.log(this._hpBoss)
@@ -110,6 +125,5 @@ cc.Class({
                 this._timer = 0
             }
         }
-
     },
 });

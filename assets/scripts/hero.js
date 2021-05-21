@@ -14,10 +14,9 @@ cc.Class({
         this.colider = this.getComponent(cc.PolygonCollider)
         this._anim_down = this.getComponent(cc.Animation)
     },
-    start() {
-    },
-    onCollisionEnter: function (other, self) {
-        if (other.node.group == "enemy") {
+    start() {},
+    onCollisionEnter: function(other, self) {
+        if (other.node.group == "enemy" || other.node.group == "ammo") {
             this._anim_down.play("hero_destroy")
             cc.tween(this.node)
                 .delay(1)
