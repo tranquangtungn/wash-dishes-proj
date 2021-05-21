@@ -25,6 +25,7 @@ cc.Class({
 
         score: cc.Label,
         scoreOver: cc.Label,
+        nameOver: cc.EditBox,
 
         pre_hero: cc.Prefab,
         _hero: cc.Node,
@@ -38,6 +39,8 @@ cc.Class({
         pre_skillBullet: cc.Prefab,
         pre_skillShield: cc.Prefab,
 
+        chargeSkill: cc.ProgressBar,
+
         sound_src: {
             default: null,
             type: cc.AudioClip,
@@ -48,10 +51,11 @@ cc.Class({
             notify: function (index) {
                 this.initWave(this._waveNum)
             },
-        },
 
-        anim_hero: null,
-        anim_node: null
+        },
+        _isWashDishes: false
+        // anim_hero: null,
+        // anim_node: null
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -82,7 +86,7 @@ cc.Class({
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
         //manager.enabledDebugDraw = true;
-        this.getData();
+
         this.init();
         this.setTouch();
 
@@ -129,7 +133,19 @@ cc.Class({
             cc.log("no storage");
             leaderBoard = [{
                 name: "quangtung",
-                score: 300,
+                score: 1,
+            },
+            {
+                name: "quangtung",
+                score: 20,
+            },
+            {
+                name: "quangtung",
+                score: 3,
+            },
+            {
+                name: "quangtung",
+                score: 5,
             },
             {
                 name: "quangtung",
@@ -137,19 +153,7 @@ cc.Class({
             },
             {
                 name: "quangtung",
-                score: 100,
-            },
-            {
-                name: "quangtung",
-                score: 300,
-            },
-            {
-                name: "quangtung",
-                score: 200,
-            },
-            {
-                name: "quangtung",
-                score: 100,
+                score: 50,
             },
             {
                 name: "quangtung",
@@ -172,6 +176,7 @@ cc.Class({
     },
 
     washDishes() {
+        this._isWashDishes = true;
         let positon = [
             cc.v2(-20, -20),
             cc.v2(-10, -10),
@@ -206,11 +211,16 @@ cc.Class({
                     cc.delayTime(0.4),
 
                     cc.rotateBy(6, 360 * 120),
-                    cc.callFunc(() => js.onBulletKilled())
+                    cc.callFunc(() => {
+                        js.onBulletKilled()
+                        this._isWashDishes = false;
+
+                    }),
+
 
                 )
                 js.action(anim)
-                this.anim_hero =
+                let anim_hero =
                     cc.sequence(
                         cc.delayTime(1.5),
                         cc.repeat(
@@ -227,8 +237,8 @@ cc.Class({
                             ), 32
                         )
                     )
-                this._hero.runAction(this.anim_hero)
-                this.anim_node =
+                this._hero.runAction(anim_hero)
+                let anim_node =
                     cc.sequence(
                         cc.delayTime(1.5),
                         cc.repeat(
@@ -241,7 +251,7 @@ cc.Class({
                             ), 64
                         )
                     )
-                this.node.runAction(this.anim_node)
+                this.node.runAction(anim_node)
 
                 //js.action(seq)
 
@@ -290,13 +300,13 @@ cc.Class({
     update(dt) {
         //cc.log(this.node.children)
         this.setBg();
-        if (this.gameState == config.gameState.PLAYING) {
+        if (this.gameState == config.gameState.PLAYING && this._isWashDishes == false) {
             this.bulletTime++;
 
             if (this.bulletTime == 10) {
                 this.bulletTime = 0;
                 //this.washDishes()
-                // this.createBullet();
+                this.createBullet();
             }
         }
     },
@@ -318,6 +328,9 @@ cc.Class({
         this.spawnAssasinTime = 0;
         this.spawnMotherShipTime = 0;
         this.level = 1;
+
+        this.getData();
+        //this._waveNum = 1;
     },
     setTouch() {
         this.node.on(
@@ -368,6 +381,57 @@ cc.Class({
 
         this.loadLayer(this.gameOverLayer);
         this.scoreOver.string = this.score.string;
+        let index = this.checkLeaderBoard(Number(this.score.string))
+        cc.log(index)
+        if (index) {
+            this.nameOver.node.active = true;
+        }
+        else {
+            this.nameOver.node.active = false;
+        }
+
+    },
+    checkLeaderBoard(score) {
+        let leaderBoard = JSON.parse(
+            cc.sys.localStorage.getItem(config.storageKey.LEADERBOARD)
+        );
+        cc.log(typeof (score))
+        for (let i = 0; i < leaderBoard.length; i++) {
+            cc.log(leaderBoard[i].score)
+            if (leaderBoard[i].score <= score) {
+
+                return true
+            }
+        }
+        return false
+
+
+    },
+    saveLeaderBoard() {
+        let leaderBoard = JSON.parse(
+            cc.sys.localStorage.getItem(config.storageKey.LEADERBOARD)
+        )
+        let name = "unknown"
+        if (this.nameOver.string)
+            name = this.nameOver.string
+        let topUser = {
+            name: name,
+            score: Number(this.scoreOver.string)
+        }
+        leaderBoard.pop()
+        leaderBoard.push(topUser)
+        for (let i = 0; i < leaderBoard.length - 1; i++)
+            for (let j = i + 1; j < leaderBoard.length; j++) {
+                if (leaderBoard[i].score < leaderBoard[j].score) {
+                    let temp = leaderBoard[i];
+                    leaderBoard[i] = leaderBoard[j]
+                    leaderBoard[j] = temp
+                }
+            }
+        cc.sys.localStorage.setItem(
+            config.storageKey.LEADERBOARD,
+            JSON.stringify(leaderBoard)
+        );
     },
     createEnemy(pre_enemy, index) {
         let x = index % this.allRow;
@@ -388,6 +452,14 @@ cc.Class({
         //cc.log("tets")
         this.score.string = Number(this.score.string) + score;
         this.updateLevel();
+        this.charge();
+    },
+    charge() {
+        if (!this._isWashDishes && this.chargeSkill.progress < 1)
+            cc.tween(this.chargeSkill)
+                .by(0.5, { progress: 0.1 })
+                .start()
+
     },
     updateLevel() {
         this.level = Math.floor(this.score.string / 50) + 1;
@@ -407,7 +479,7 @@ cc.Class({
             let pos = this._hero.getPosition();
             let bullet = cc.instantiate(this.pre_bullet);
             bullet.parent = this.node;
-            bullet.setPosition(cc.v2(pos.x, pos.y + this._hero.height / 2));
+            bullet.setPosition(cc.v2(pos.x, pos.y + this._hero.height / 2 + 2));
         }
     },
 
@@ -430,6 +502,7 @@ cc.Class({
         for (let i = children.length - 1; i >= 0; i--) {
             let enemy = children[i].getComponent("hero");
             if (enemy) {
+                cc.log("hero killed")
                 enemy.onHeroKilled();
             }
         }
@@ -446,14 +519,13 @@ cc.Class({
         switch (str) {
             case "play":
                 this.spawnHero();
-
                 this._waveNum = 1
                 mEmitter.instance.registerEvent(config.event.ENEMY_DESTROY, this.waveStatus.bind(this))
                 this.isBgMove = true;
                 this.loadLayer(this.gamePlayingLayer);
                 this.gameState = config.gameState.PLAYING;
                 mEmitter.instance.emit(config.event.UPDATE_GAMESTATE, this.gameState);
-                this.washDishes();
+                //this.washDishes();
                 break;
             case "resume":
                 this.isBgMove = true;
@@ -471,8 +543,10 @@ cc.Class({
                 break;
             case "restart":
                 this.isBgMove = false;
+                this.saveLeaderBoard();
                 this.loadLayer(this.gameReadyLayer);
                 this.gameState = config.gameState.READY;
+                this.stopAllActions();
                 this.removeAllBullet();
                 this.removeAllEnemy();
                 this.removeHero();
@@ -497,6 +571,18 @@ cc.Class({
                     this.loadLayer(this.gamePauseLayer);
                 //this.saveLeaderBoard()
                 this.saveSettings();
+
+                break;
+            case "washDishes":
+                cc.log(this.chargeSkill.progress)
+                if (this.chargeSkill.progress >= 1) {
+                    this.washDishes();
+                    cc.tween(this.chargeSkill)
+                        .delay(1.5)
+                        .to(6.4, { progress: 0 })      // node.scale === 2
+                        // node.scale === 2
+                        .start()
+                }
                 break;
             default:
                 break;
@@ -514,7 +600,13 @@ cc.Class({
         this.node.resumeAllActions()
         this._hero.resumeAllActions()
     },
-    saveLeaderBoard() { },
+    stopAllActions() {
+        cc.log("resume")
+        this.node.stopAllActions()
+        this._hero.stopAllActions()
+        this.waveTitle.stopAllActions()
+    },
+
     saveSettings() {
         cc.log("save settings");
         let settings = {
@@ -530,6 +622,7 @@ cc.Class({
     },
     //read json
     getData() {
+        cc.log("get data")
         cc.loader.loadRes("waveconfig.json", this.getWaveData.bind(this));
     },
     getWaveData(err, obj) {
@@ -541,11 +634,12 @@ cc.Class({
         this.waveCount = obj.json.wavecount;
     },
     initWave(waveNum) {
-        if (1 > this.waveCount) {
+        if (waveNum > this.waveCount) {
             cc.log("overLoad");
             this.gameFinished();
             return;
         }
+        cc.log(waveNum)
         cc.log(this.waveContent[waveNum]);
         let content = this.waveContent[waveNum].content;
         this.totalEnemy = this.waveContent[waveNum].enemy;
