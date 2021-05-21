@@ -43,7 +43,18 @@
             "enemy": 18,
             "allRow": 6,
             "allCol": 3
+        },
+        "5": {
+            "content": [
+                0, 0, 0, 0, 0,
+                0, 0, 5, 0, 0,
+                0, 0, 0, 0, 0
+            ],
+            "sologan": "Big Boss",
+            "enemy": 1,
+            "allRow": 5,
+            "allCol": 3
         }
     },
-    "wavecount": 4
+    "wavecount": 5
 }
