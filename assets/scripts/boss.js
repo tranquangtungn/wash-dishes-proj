@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] https://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
-const Emitter = require("mEmitter")
+const Emitter = require("mEmitter");
 cc.Class({
     extends: cc.Component,
 
@@ -19,40 +19,32 @@ cc.Class({
         laser: {
             default: null,
             type: cc.Sprite,
-        }
+        },
     },
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
-        Emitter.instance.registerEvent('shipMoving', this.trackingShip.bind(this))
+        Emitter.instance.registerEvent("shipMoving", this.trackingShip.bind(this));
     },
     trackingShip(arg) {
-        let dir = Math.pow(arg.x - this.node.x, 2) + Math.pow(arg.y - this.node.y, 2)
-        let opposite = Math.abs(arg.x - this.node.x)
-        let hypotenuse = Math.sqrt(dir)
-        let delta = Math.asin(opposite / hypotenuse) * 180 / Math.PI
-        let radisus = 0;
+        let dir =
+            Math.pow(arg.x - this.node.x, 2) + Math.pow(arg.y - this.node.y, 2);
+        let opposite = Math.abs(arg.x - this.node.x);
+        let hypotenuse = Math.sqrt(dir);
+        let alpha = (Math.asin(opposite / hypotenuse) * 180) / Math.PI;
         let dirr = 1;
         if (arg.x > this.node.x) {
-            dirr = -1
-     
+            dirr = -1;
+        } else if (arg.x < this.node.x) {
+            dirr = 1;
         }
-        else if(arg.x<this.node.x){
-            dirr=1
+        if (arg.y > this.node.y) {
+            alpha = 90 - alpha + 90
         }
-        // else if (arg.x > this.node.x) {
-        //     if (arg.y > this.node.y) {
-        //         radisus = -40
-        //     }
-        // }
-        cc.log( delta +' : '+dirr+' : '+ radisus)
-        this.turret.node.angle =-(delta *dirr + radisus) 
-
+        this.turret.node.angle = -(alpha * dirr);
     },
 
-    start() {
-
-    },
+    start() {},
 
     // update (dt) {},
 });

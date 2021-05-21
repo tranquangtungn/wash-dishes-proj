@@ -33,6 +33,7 @@ cc.Class({
         pre_assassin: cc.Prefab,
         pre_motherShip: cc.Prefab,
         pre_bullet: cc.Prefab,
+        pre_boss: cc.Prefab,
 
         sound_src: {
             default: null,
@@ -41,8 +42,8 @@ cc.Class({
         _waveNum: {
             default: 1,
             type: cc.Integer,
-            notify: function (index) {
-                this.initWave(this._waveNum)
+            notify: function(index) {
+                this.initWave(this._waveNum);
             },
         },
     },
@@ -119,41 +120,41 @@ cc.Class({
         if (!leaderBoard) {
             cc.log("no storage");
             leaderBoard = [{
-                name: "quangtung",
-                score: 300,
-            },
-            {
-                name: "quangtung",
-                score: 200,
-            },
-            {
-                name: "quangtung",
-                score: 100,
-            },
-            {
-                name: "quangtung",
-                score: 300,
-            },
-            {
-                name: "quangtung",
-                score: 200,
-            },
-            {
-                name: "quangtung",
-                score: 100,
-            },
-            {
-                name: "quangtung",
-                score: 300,
-            },
-            {
-                name: "quangtung",
-                score: 200,
-            },
-            {
-                name: "quangtung",
-                score: 100,
-            },
+                    name: "quangtung",
+                    score: 300,
+                },
+                {
+                    name: "quangtung",
+                    score: 200,
+                },
+                {
+                    name: "quangtung",
+                    score: 100,
+                },
+                {
+                    name: "quangtung",
+                    score: 300,
+                },
+                {
+                    name: "quangtung",
+                    score: 200,
+                },
+                {
+                    name: "quangtung",
+                    score: 100,
+                },
+                {
+                    name: "quangtung",
+                    score: 300,
+                },
+                {
+                    name: "quangtung",
+                    score: 200,
+                },
+                {
+                    name: "quangtung",
+                    score: 100,
+                },
             ];
             cc.sys.localStorage.setItem(
                 config.storageKey.LEADERBOARD,
@@ -161,7 +162,7 @@ cc.Class({
             );
         }
     },
-    start() { },
+    start() {},
 
     setSoundVolume(number) {
         this.soundVolume = number;
@@ -203,7 +204,7 @@ cc.Class({
     setTouch() {
         this.node.on(
             "touchstart",
-            function (event) {
+            function(event) {
                 // this.gameState = config.gameState.PLAYING;
                 // this.gameReadyLayer.active = false;
                 // this.gamePlayingLayer.active = true;
@@ -214,16 +215,16 @@ cc.Class({
         );
         this.node.on(
             "touchmove",
-            function (event) {
+            function(event) {
                 if (this._hero.name != "") {
                     let pos_hero = this._hero.getPosition();
                     let pos_mov = event.getDelta();
                     let x = pos_hero.x + pos_mov.x;
                     let y = pos_hero.y + pos_mov.y;
                     if (x < 280 && x > -280)
-                        if (y < 400 && y > -400) { 
-                            mEmitter.instance.emit('shipMoving',cc.v2(x,y))
-                            this._hero.setPosition(cc.v2(x, y)); 
+                        if (y < 400 && y > -400) {
+                            mEmitter.instance.emit("shipMoving", cc.v2(x, y));
+                            this._hero.setPosition(cc.v2(x, y));
                         }
                 }
             },
@@ -231,7 +232,7 @@ cc.Class({
         );
         this.node.on(
             "touchend",
-            function (event) {
+            function(event) {
                 cc.log("touchend");
             },
             this
@@ -253,6 +254,13 @@ cc.Class({
         let js = enemy.getComponent("enemy");
         js.speed = 2;
         js.targetpos = cc.v2(x * 100 - (100 * this.allRow) / 2 + 50, y * 100);
+        enemy.parent = this.node;
+    },
+    createBoss(pre_enemy, index) {
+        let x = index % this.allRow;
+        let y = Math.floor(index / this.allRow);
+        let enemy = cc.instantiate(pre_enemy);
+        enemy.setPosition(x * 100 - (100 * this.allRow) / 2 + 50, y * 100);
         enemy.parent = this.node;
     },
     spawnHero() {
@@ -322,8 +330,11 @@ cc.Class({
         switch (str) {
             case "play":
                 this.spawnHero();
-                this._waveNum = 5
-                mEmitter.instance.registerEvent(config.event.ENEMY_DESTROY, this.waveStatus.bind(this))
+                this._waveNum = 5;
+                mEmitter.instance.registerEvent(
+                    config.event.ENEMY_DESTROY,
+                    this.waveStatus.bind(this)
+                );
             case "resume":
                 this.isBgMove = true;
                 this.loadLayer(this.gamePlayingLayer);
@@ -369,7 +380,7 @@ cc.Class({
                 break;
         }
     },
-    saveLeaderBoard() { },
+    saveLeaderBoard() {},
     saveSettings() {
         cc.log("save settings");
         let settings = {
@@ -433,6 +444,10 @@ cc.Class({
                             {
                                 this.createEnemy(this.pre_motherShip, index);
                                 break;
+                            }
+                        case 5:
+                            {
+                                this.createBoss(this.pre_boss, index);
                             }
                         default:
                             {
