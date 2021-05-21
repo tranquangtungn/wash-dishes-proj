@@ -13,11 +13,12 @@ cc.Class({
         gamePlayingLayer: cc.Node,
         gamePauseLayer: cc.Node,
         gameOverLayer: cc.Node,
-        heroSkinsLayer: cc.Node,
+
         rankedLayer: cc.Node,
         settingsLayer: cc.Node,
         waveTitle: cc.Node,
         winLayer: cc.Node,
+        helpLayer: cc.Node,
 
         _LayerList: {
             default: [],
@@ -27,6 +28,8 @@ cc.Class({
         score: cc.Label,
         scoreOver: cc.Label,
         nameOver: cc.EditBox,
+
+        nameWin: cc.EditBox,
 
         pre_hero: cc.Prefab,
         _hero: cc.Node,
@@ -50,11 +53,12 @@ cc.Class({
         _waveNum: {
             default: 1,
             type: cc.Integer,
-            notify: function() {
+            notify: function () {
                 this.initWave(this._waveNum);
             },
         },
         _isWashDishes: false,
+
         // anim_hero: null,
         // anim_node: null
     },
@@ -69,10 +73,11 @@ cc.Class({
             this.gamePlayingLayer,
             this.gamePauseLayer,
             this.gameOverLayer,
-            this.heroSkinsLayer,
+
             this.rankedLayer,
             this.settingsLayer,
             this.winLayer,
+            this.helpLayer,
         ];
 
         this.settings = JSON.parse(
@@ -110,6 +115,7 @@ cc.Class({
             this.gameFinished.bind(this)
         );
     },
+
     initLocalStorage() {
         let settings = JSON.parse(
             cc.sys.localStorage.getItem(config.storageKey.SETTINGS)
@@ -133,41 +139,41 @@ cc.Class({
         if (!leaderBoard) {
             cc.log("no storage");
             leaderBoard = [{
-                    name: "quangtung",
-                    score: 1,
-                },
-                {
-                    name: "quangtung",
-                    score: 20,
-                },
-                {
-                    name: "quangtung",
-                    score: 3,
-                },
-                {
-                    name: "quangtung",
-                    score: 5,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 50,
-                },
-                {
-                    name: "quangtung",
-                    score: 300,
-                },
-                {
-                    name: "quangtung",
-                    score: 200,
-                },
-                {
-                    name: "quangtung",
-                    score: 100,
-                },
+                name: "quangtung",
+                score: 300,
+            },
+            {
+                name: "quangtung",
+                score: 290,
+            },
+            {
+                name: "quangtung",
+                score: 120,
+            },
+            {
+                name: "quangtung",
+                score: 110,
+            },
+            {
+                name: "quangtung",
+                score: 100,
+            },
+            {
+                name: "quangtung",
+                score: 50,
+            },
+            {
+                name: "quangtung",
+                score: 40,
+            },
+            {
+                name: "quangtung",
+                score: 30,
+            },
+            {
+                name: "quangtung",
+                score: 20,
+            },
             ];
             cc.sys.localStorage.setItem(
                 config.storageKey.LEADERBOARD,
@@ -259,7 +265,7 @@ cc.Class({
             js.action(anim);
         }
     },
-    start() {},
+    start() { },
 
     setSoundVolume(number) {
         this.soundVolume = number;
@@ -304,14 +310,16 @@ cc.Class({
         this.spawnMotherShipTime = 0;
         this.level = 1;
         this._waveStart = 1;
+        this.chargeSkill.progress = 0.5;
         this.getData();
+        this._isWashDishes = false
         //this._waveNum = 1;
     },
     setTouch() {
-        this.node.on("touchstart", function(event) {}, this);
+        this.node.on("touchstart", function (event) { }, this);
         this.node.on(
             "touchmove",
-            function(event) {
+            function (event) {
                 //this.washDishes();
                 if (this._hero.name != "") {
                     let pos_hero = this._hero.getPosition();
@@ -339,10 +347,10 @@ cc.Class({
         );
         this.node.on(
             "touchend",
-            function(event) {
+            function (event) {
                 cc.log("touchend");
             },
-            this
+
         );
     },
     gameFinished() {
@@ -377,10 +385,18 @@ cc.Class({
             cc.sys.localStorage.getItem(config.storageKey.LEADERBOARD)
         );
         let name = "unknown";
-        if (this.nameOver.string) name = this.nameOver.string;
+
+        if (this.nameOver.string) {
+            name = this.nameOver.string;
+
+        }
+        else if (this.nameWin.string) {
+            name = this.nameWin.string;
+
+        }
         let topUser = {
             name: name,
-            score: Number(this.scoreOver.string),
+            score: Number(this.score.string)
         };
         leaderBoard.pop();
         leaderBoard.push(topUser);
@@ -396,6 +412,8 @@ cc.Class({
             config.storageKey.LEADERBOARD,
             JSON.stringify(leaderBoard)
         );
+        this.nameWin.string = ""
+        this.nameOver.string = ""
     },
     createEnemy(pre_enemy, index) {
         let x = index % this.allRow;
@@ -421,6 +439,7 @@ cc.Class({
     charge() {
         if (!this._isWashDishes && this.chargeSkill.progress < 1)
             cc.tween(this.chargeSkill).by(0.5, { progress: 0.1 }).start();
+
     },
     updateLevel() {
         this.level = Math.floor(this.score.string / 50) + 1;
@@ -521,16 +540,17 @@ cc.Class({
                 this.removeHero();
                 this.init();
                 break;
-            case "skins":
-                this.loadLayer(this.heroSkinsLayer);
-                //this.gameState = config.gameState.HEROSKINS;
-                break;
+
             case "ranked":
                 this.loadLayer(this.rankedLayer);
                 //this.gameState = config.gameState.RANKED;
                 break;
             case "settings":
                 this.loadLayer(this.settingsLayer);
+                // this.gameState = config.gameState.SETTINGS;
+                break;
+            case "help":
+                this.loadLayer(this.helpLayer);
                 // this.gameState = config.gameState.SETTINGS;
                 break;
             case "back":
@@ -560,17 +580,22 @@ cc.Class({
         cc.log("pause");
         this.node.pauseAllActions();
         this._hero.pauseAllActions();
+        this.chargeSkill.node.pauseAllActions();
     },
     resumeAllActions() {
         cc.log("resume");
         this.node.resumeAllActions();
         this._hero.resumeAllActions();
+        this.chargeSkill.node.resumeAllActions();
     },
     stopAllActions() {
         cc.log("resume");
         this.node.stopAllActions();
         this._hero.stopAllActions();
         this.waveTitle.stopAllActions();
+        this.chargeSkill.node.stopAllActions();
+
+
     },
 
     saveSettings() {
