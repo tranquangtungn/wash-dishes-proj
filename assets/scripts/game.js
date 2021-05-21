@@ -481,7 +481,7 @@ cc.Class({
             case "play":
                 this.spawnHero();
                 this.enemydestroy = this.waveStatus.bind(this)
-                this._waveNum = 5;
+                this._waveNum = 1;
                 mEmitter.instance.registerEvent(
                     config.event.ENEMY_DESTROY,
                     this.enemydestroy

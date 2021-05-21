@@ -57,18 +57,20 @@ cc.Class({
     },
     gameOver() {
         mEmitter.instance.removeEvent(config.event.GAME_OVER, this.gameOver)
-        this.node.destroy()
+        this.onKilled()
     },
-    onEnemyKilled() {
+    onKilled() {
         // mEmitter.instance.emit(config.event.ENEMY_DESTROY);
         // mEmitter.instance.removeEvent(
         //     config.event.UPDATE_GAMESTATE,
         //     this._updateGameState
         // );
         // mEmitter.instance.removeEvent("shipMoving", this.tracking)
+        mEmitter.instance.removeEvent('shipMoving', this.tracking)
         this.node.destroy();
     },
     trackingShip(arg) {
+        cc.log(arg)
         if (this._ready) {
             this._targetPos = arg
             let dir =
@@ -88,6 +90,7 @@ cc.Class({
             this._angleTurret = -(alpha * dirr);
             this.turret.node.angle = this._angleTurret;
         }
+        // cc.log(arg)
     },
     onCollisionEnter: function(other, self) {
         if (other.node.group == 'bullet') {
@@ -103,7 +106,7 @@ cc.Class({
         mEmitter.instance.emit('bossout', this._hpBoss)
         this._ready = false
         this.node.stopAllActions()
-        this.node.destroy()
+        this.onKilled
     },
     start() {
         let move = cc.moveTo(3, { y: 100, x: 0 })
